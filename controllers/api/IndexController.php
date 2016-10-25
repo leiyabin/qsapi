@@ -6,16 +6,13 @@
  * Time: 22:41
  */
 
-namespace app\controllers\index;
+namespace app\controllers\api;
 
-
-use yii\web\Controller;
-
-class IndexController extends Controller
+class IndexController extends ControllerBase
 {
 
     public function actionIndex()
     {
-
+        echo  $this->success('hello world!');
     }
 }

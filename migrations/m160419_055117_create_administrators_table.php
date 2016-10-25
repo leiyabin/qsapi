@@ -6,25 +6,25 @@ class m160419_055117_create_administrators_table extends Migration
 {
     public function safeUp()
     {
-        $this->createTable('{{%administrators}}', [
-            'id' => $this->primaryKey(),
+        $this->createTable('{{%admin}}', [
+            'id'       => $this->primaryKey(),
             'username' => $this->string(50)->defaultValue('')->unique(),
-            'email' => $this->string(100)->defaultValue(''),
-            'phone' => $this->string(20)->defaultValue(''),
-            'name' => $this->string(20)->defaultValue(''),
+            'email'    => $this->string(100)->defaultValue(''),
+            'phone'    => $this->string(20)->defaultValue(''),
+            'name'     => $this->string(20)->defaultValue(''),
             'password' => $this->string(60)->defaultValue(''),
-            'created_at' => $this->dateTime()
+            'c_t'      => $this->time()
         ]);
-        $this->insert('{{%administrators}}',[
+        $this->insert('{{%admin}}', [
             'username' => 'admin',
             'password' => Yii::$app->security->generatePasswordHash('admin'),
-            'name' => '管理员',
-            'created_at' => date('Y-m-d H:i:s')
+            'name'     => '管理员',
+            'c_t'      => time()
         ]);
     }
 
     public function safeDown()
     {
-        $this->dropTable('{{%administrators}}');
+        $this->dropTable('{{%admin}}');
     }
 }
