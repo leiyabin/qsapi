@@ -124,7 +124,6 @@ class AdministratorsController extends ControllerBase
                 $query->where('username like :username',[':username'=>'%'.$searchConditions['username'].'%']);
             }
         }
-//        var_dump($query->createCommand()->getRawSql());exit;
         $countQuery = clone $query;
         $pages = new Pagination(['totalCount'=>$countQuery->count(),'defaultPageSize'=>20]);
         $list = $query->offset($pages->offset)->limit($pages->limit)->orderBy('id desc')->all();

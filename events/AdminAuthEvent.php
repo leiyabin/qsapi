@@ -32,7 +32,7 @@ class AdminAuthEvent
         $record->username = $identity->username;
         $record->type = $type;
         $record->ip = Yii::$app->request->getUserIP();
-        $record->created_at = date('Y-m-d H:i:s');
+        $record->c_t = date('Y-m-d H:i:s');
         return $record->save();
     }
 }

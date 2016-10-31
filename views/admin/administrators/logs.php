@@ -48,7 +48,7 @@ use yii\helpers\Html;
                     <th><?=$item->uid;?></th>
                     <th><?=$item->username;?></th>
                     <th><?=$item->ip;?></th>
-                    <th><?=$item->created_at;?></th>
+                    <th><?=$item->c_t;?></th>
                 </tr>
             <?php endforeach;?>
             </tbody>

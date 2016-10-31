@@ -12,7 +12,7 @@ class Administrator extends ActiveRecord implements \yii\web\IdentityInterface
      */
     public static function tableName()
     {
-        return '{{%administrators}}';
+        return '{{%admin}}';
     }
 
     /**
@@ -141,7 +141,7 @@ class Administrator extends ActiveRecord implements \yii\web\IdentityInterface
     {
         //创建时间
         if ($insert) {
-            $this->created_at = date('Y-m-d H:i:s');
+            $this->c_t = date('Y-m-d H:i:s');
         }
         return parent::beforeSave($insert);
     }

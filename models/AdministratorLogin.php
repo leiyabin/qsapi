@@ -21,7 +21,7 @@ class AdministratorLogin extends \yii\db\ActiveRecord
      */
     public static function tableName()
     {
-        return '{{%administrator_login}}';
+        return '{{%admin_login}}';
     }
 
     /**
@@ -31,7 +31,7 @@ class AdministratorLogin extends \yii\db\ActiveRecord
     {
         return [
             [['uid'], 'integer'],
-            [['created_at'], 'safe'],
+            [['c_t'], 'safe'],
             [['type', 'username', 'ip'], 'string', 'max' => 255],
         ];
     }
@@ -47,7 +47,7 @@ class AdministratorLogin extends \yii\db\ActiveRecord
             'uid' => 'Uid',
             'username' => 'Username',
             'ip' => 'Ip',
-            'created_at' => 'Created At',
+            'c_t' => 'Created At',
         ];
     }
 }

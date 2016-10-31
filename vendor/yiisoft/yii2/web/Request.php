@@ -394,7 +394,6 @@ class Request extends \yii\base\Request
             } else {
                 $contentType = $rawContentType;
             }
-
             if (isset($this->parsers[$contentType])) {
                 $parser = Yii::createObject($this->parsers[$contentType]);
                 if (!($parser instanceof RequestParserInterface)) {
@@ -415,7 +414,6 @@ class Request extends \yii\base\Request
                 mb_parse_str($this->getRawBody(), $this->_bodyParams);
             }
         }
-
         return $this->_bodyParams;
     }
 

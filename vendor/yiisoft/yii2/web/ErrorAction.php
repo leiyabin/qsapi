@@ -98,7 +98,6 @@ class ErrorAction extends Action
         } else {
             $message = $this->defaultMessage ?: Yii::t('yii', 'An internal server error occurred.');
         }
-
         if (Yii::$app->getRequest()->getIsAjax()) {
             return "$name: $message";
         } else {

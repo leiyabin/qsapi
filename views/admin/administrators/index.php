@@ -88,7 +88,7 @@ use yii\helpers\Url;
                     <th><?=$item->name;?></th>
                     <th><?=$item->email;?></th>
                     <th><?=$item->phone;?></th>
-                    <th><?=$item->created_at;?></th>
+                    <th><?=$item->c_t;?></th>
                     <th>
                     <td class="table-action">
                         <a href="<?=Url::to(['edit','id'=>$item->id]);?>"><i class="fa fa-pencil"></i></a>

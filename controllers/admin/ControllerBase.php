@@ -6,12 +6,10 @@
  */
 namespace app\controllers\admin;
 
-use yii\web\Controller;
+use app\components\LController;
 use yii\filters\AccessControl;
-use yii\filters\ContentNegotiator;
-use yii\web\Response;
 
-abstract class ControllerBase extends Controller
+abstract class ControllerBase extends LController
 {
     public $layout = 'admin';
 

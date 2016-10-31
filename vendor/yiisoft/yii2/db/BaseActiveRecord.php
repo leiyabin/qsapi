@@ -627,7 +627,10 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
      */
     public function save($runValidation = true, $attributeNames = null)
     {
+        $timestamp = time();
+        $this->setAttribute('u_t', $timestamp);
         if ($this->getIsNewRecord()) {
+            $this->setAttribute('c_t', $timestamp);
             return $this->insert($runValidation, $attributeNames);
         } else {
             return $this->update($runValidation, $attributeNames) !== false;

@@ -8,11 +8,17 @@
 
 namespace app\controllers\api;
 
-class IndexController extends ControllerBase
+use Yii;
+use app\components\LController;
+use yii\web\HttpException;
+
+class IndexController extends LController
 {
 
     public function actionIndex()
     {
-        echo  $this->success('hello world!');
+        var_dump(Yii::$app->request->post());die;
+//        var_dump($request);die;
+//        throw new HttpException(500,"连接失败！");
     }
 }

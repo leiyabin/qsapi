@@ -8,33 +8,57 @@
 
 namespace app\controllers\api;
 
+use app\components\LController;
+use app\components\Utils;
+use app\consts\ErrorCode;
+use app\Exception\RequestException;
 use app\models\AdminModel;
+use Yii;
 
 
-class AdminController extends ControllerBase
+class AdminController extends LController
 {
+
     public function actionList()
     {
-        $list = AdminModel::getList();
-        $data = ['admins' => $list];
-        return $this->success($data);
+        $pageInfo = $this->pageInfo();
+        $data = AdminModel::model()->getList($pageInfo);
+        return $this->renderPage($data, $pageInfo);
+    }
+
+    public function actionGet()
+    {
+        if (empty($this->params['id'])) {
+            throw new RequestException('id参数为空！', ErrorCode::INVALID_PARAM);
+        }
+        $id = $this->params['id'];
+        $model = AdminModel::model()->getOne($id);
+        return $this->success($model);
     }
 
     public function actionDel()
     {
-        echo  $this->success('hello world!');
+        if (empty($this->params['id'])) {
+            throw new RequestException('id参数为空！', ErrorCode::INVALID_PARAM);
+        }
+        $id = $this->params['id'];
+        AdminModel::model()->del($id);
+        return $this->success();
+    }
+
+    public function actionAdd()
+    {
+        AdminModel::model()->add($this->params);
+        return $this->success();
     }
 
     public function actionEdit()
     {
-        echo  $this->success('hello world!');
-    }
-    public function actionAdd()
-    {
-        echo  $this->success('hello world!');
-    }
-    public function actionGet()
-    {
-        echo  $this->success('hello world!');
+        $admin = $this->params;
+        if (empty($admin['id'])) {
+            throw new RequestException('id参数为空！', ErrorCode::INVALID_PARAM);
+        }
+        AdminModel::model()->modify($admin);
+        return $this->success();
     }
 }

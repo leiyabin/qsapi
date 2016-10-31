@@ -13,6 +13,7 @@ use yii\web\User;
 use Yii;
 use app\models\Administrator as Identity;
 use app\events\AdminAuthEvent;
+use yii\base\InvalidParamException;
 
 class AuthController extends Controller
 {
@@ -30,6 +31,7 @@ class AuthController extends Controller
      */
     public function actionLogin()
     {
+
         $request = Yii::$app->request;
         if (!$request->isPost) {
             return $this->render('login');
