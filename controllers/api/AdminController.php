@@ -55,8 +55,11 @@ class AdminController extends LController
     public function actionEdit()
     {
         $admin = $this->params;
-        if (empty($admin['id'])) {
-            throw new RequestException('id参数为空！', ErrorCode::INVALID_PARAM);
+        $requires = ['id', 'name', 'phone', 'email', 'password'];
+        foreach ($requires as $require) {
+            if (empty($this->params[$require])) {
+                throw new RequestException($require . '不能为空', ErrorCode::INVALID_PARAM);
+            }
         }
         AdminModel::model()->modify($admin);
         return $this->success();

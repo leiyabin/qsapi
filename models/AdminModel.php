@@ -66,7 +66,7 @@ class AdminModel extends LModel
         return $admin;
     }
 
-    public function Add($admin)
+    public function add($admin)
     {
         $this->attributes = $admin;
         if ($this->validate()) {
@@ -82,18 +82,16 @@ class AdminModel extends LModel
         }
     }
 
-    public function modify($admin)
+    public function modify($data)
     {
-        $id = $admin['id'];
+        $id = $data['id'];
         $admin = AdminModel::findOne($id);
-        $model = DynamicModel::validateData(compact('name', 'email'), [
-            [['name', 'email'], 'string', 'max' => 128],
-            ['email', 'email'],
-        ]);
         if (empty($admin)) {
             throw new RequestException('该管理员不存在', ErrorCode::ACTION_ERROR);
         } else {
             try {
+                $data['password'] = Utils::lMd5($data['password']);
+                $admin->setAttributes($data);
                 $admin->save();
             } catch (Exception $e) {
                 throw new RequestException($e->getMessage(), ErrorCode::SYSTEM_ERROR);
