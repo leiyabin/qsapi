@@ -9,7 +9,6 @@
 namespace app\controllers\api;
 
 use app\components\LController;
-use app\components\Utils;
 use app\consts\ErrorCode;
 use app\Exception\RequestException;
 use app\models\AdminModel;
