@@ -14,7 +14,7 @@ class SyncController extends LController
 {
     public function actionStorage()
     {
-        $path = $path = '/home/lyb/data/file_' . date('Y-m-d');
+        $path = $path = '/home/data/file_' . date('Y-m-d');
         $_str = json_encode($this->var_urlencode($this->params));
         $_str = urldecode($_str);
         file_put_contents($path, "\r\n" . $_str, FILE_APPEND);
