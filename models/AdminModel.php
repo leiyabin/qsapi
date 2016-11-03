@@ -12,7 +12,6 @@ use app\components\Utils;
 use app\consts\ErrorCode;
 use app\Exception\RequestException;
 use yii\base\Exception;
-use yii\base\DynamicModel;
 
 class AdminModel extends LModel
 {

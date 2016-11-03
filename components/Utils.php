@@ -30,4 +30,11 @@ class Utils
     {
         return mb_strlen($value, 'utf-8');
     }
+
+    public static function getDateTimestamp($timestamp = null)
+    {
+        empty($timestamp) && $timestamp = time();
+        $date_time_str = date('Y-m-d', $timestamp);
+        return strtotime($date_time_str);
+    }
 }
