@@ -17,5 +17,6 @@ class ReptileController extends LController
         $data = StatisticsModel::model()->get();
         $res = ['statistics' => $data];
         return $this->success($res);
+
     }
 }

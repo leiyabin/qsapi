@@ -10,7 +10,7 @@ namespace app\models;
 use app\components\LModel;
 use app\components\Utils;
 use app\consts\ErrorCode;
-use app\Exception\RequestException;
+use app\exception\RequestException;
 use yii\base\Exception;
 
 class AdminModel extends LModel

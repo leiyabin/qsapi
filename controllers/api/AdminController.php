@@ -10,7 +10,7 @@ namespace app\controllers\api;
 
 use app\components\LController;
 use app\consts\ErrorCode;
-use app\Exception\RequestException;
+use app\exception\RequestException;
 use app\models\AdminModel;
 use Yii;
 

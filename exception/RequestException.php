@@ -6,7 +6,7 @@
  * Time: 9:43
  */
 
-namespace app\Exception;
+namespace app\exception;
 
 
 use yii\base\UserException;
