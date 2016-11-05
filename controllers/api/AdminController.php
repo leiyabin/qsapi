@@ -20,6 +20,7 @@ class AdminController extends LController
 
     public function actionList()
     {
+        return $this->error();
         $pageInfo = $this->pageInfo();
         $data = AdminModel::model()->getList($pageInfo);
         return $this->renderPage($data, $pageInfo);

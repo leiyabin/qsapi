@@ -14,4 +14,4 @@
 
 <?php $this->endBlock(); ?>
 
-<?=Yii::$app->administrator->getIdentity()->name;?>
+

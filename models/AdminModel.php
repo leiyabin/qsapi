@@ -92,7 +92,7 @@ class AdminModel extends LModel
                 $data['password'] = Utils::lMd5($data['password']);
                 $admin->setAttributes($data);
                 $admin->save();
-            } catch (Exception $e) {
+            } catch (\Exception $e) {
                 throw new RequestException($e->getMessage(), ErrorCode::SYSTEM_ERROR);
             }
         }

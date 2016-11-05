@@ -13,20 +13,6 @@ abstract class ControllerBase extends LController
 {
     public $layout = 'admin';
 
-    public function behaviors()
-    {
-        return [
-            'access' => [
-                'class' => AccessControl::className(),
-                'user' => 'administrator',
-                'rules' => [
-                    ['allow' => false, 'roles' => ['?']],//游客禁止访问
-                    ['allow' => true, 'roles' => ['@']],//已登录用户允许访问
-                ],
-            ]
-        ];
-    }
-
     /**
      * ajax错误信息
      *
