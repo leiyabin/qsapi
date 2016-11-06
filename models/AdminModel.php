@@ -30,7 +30,7 @@ class AdminModel extends LModel
 
     public function getList($pageInfo)
     {
-        $select = ['id', 'name', 'username', 'phone', 'email'];
+        $select = ['id', 'name', 'username', 'phone', 'email', 'c_t'];
         $limit = $pageInfo['limit'];
         $offset = $pageInfo['offset'];
         $list = $this->find()
@@ -56,7 +56,7 @@ class AdminModel extends LModel
     public function getOne($id)
     {
         $where = ['id' => $id];
-        $select = ['id', 'name', 'username', 'phone', 'email'];
+        $select = ['id', 'name', 'username', 'phone', 'email', 'c_t'];
         $admin = $this->find()
             ->addSelect($select)
             ->where($where)
