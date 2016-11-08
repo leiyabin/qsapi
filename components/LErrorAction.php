@@ -32,6 +32,7 @@ class LErrorAction extends ErrorAction
         } else {
             $message = $this->defaultMessage ?: Yii::t('yii', 'An internal server error occurred.');
         }
+        Yii::error($message);
         header("Content-type:application/json;charset=utf-8");
         $res = [
             'ret'  => 0,

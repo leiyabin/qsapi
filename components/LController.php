@@ -24,6 +24,8 @@ class LController extends Controller
         $getParams = Yii::$app->request->get();
         $postParams = Yii::$app->request->post();
         $this->params = array_merge($getParams, $postParams);
+        Yii::info(sprintf('【%s】 【%s】 【%s】', Yii::$app->request->getMethod(), Yii::$app->request->getUserIP(),
+            json_encode($this->params, JSON_UNESCAPED_UNICODE)));
     }
 
     public $enableCsrfValidation = false;
