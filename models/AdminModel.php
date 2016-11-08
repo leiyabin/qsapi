@@ -72,7 +72,7 @@ class AdminModel extends LModel
             try {
                 $this->setAttribute('password', Utils::lMd5($this->getAttribute('password')));
                 $this->save();
-            } catch (Exception $e) {
+            } catch (\Exception $e) {
                 throw new RequestException($e->getMessage(), ErrorCode::SYSTEM_ERROR);
             }
         } else {
