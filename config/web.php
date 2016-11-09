@@ -16,6 +16,13 @@ $config = [
                 'text/json'        => 'yii\web\JsonParser',
             ]
         ],
+        'response'      => [
+            'class'         => 'yii\web\Response',
+            'on beforeSend' => function ($event) {
+                $response = $event->sender;
+                $response->statusCode = 200;
+            },
+        ],
         'cache'         => [
             'class' => 'yii\caching\FileCache',
         ],
