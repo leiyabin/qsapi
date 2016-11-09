@@ -11,6 +11,7 @@ namespace app\controllers\api;
 use app\components\LController;
 use app\consts\ErrorCode;
 use app\exception\RequestException;
+use app\manager\AdminManager;
 use app\models\AdminModel;
 use Yii;
 
@@ -31,7 +32,7 @@ class AdminController extends LController
             throw new RequestException('id参数为空！', ErrorCode::INVALID_PARAM);
         }
         $id = $this->params['id'];
-        $model = AdminModel::model()->getOne($id);
+        $model = AdminModel::model()->getById($id);
         return $this->success($model);
     }
 
@@ -47,7 +48,10 @@ class AdminController extends LController
 
     public function actionAdd()
     {
-        AdminModel::model()->add($this->params);
+        if (empty($this->params['username'])) {
+            throw new RequestException('username参数为空！', ErrorCode::INVALID_PARAM);
+        }
+        AdminManager::add($this->params);
         return $this->success();
     }
 

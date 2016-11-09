@@ -11,7 +11,6 @@ use app\components\LModel;
 use app\components\Utils;
 use app\consts\ErrorCode;
 use app\exception\RequestException;
-use yii\base\Exception;
 
 class AdminModel extends LModel
 {
@@ -53,9 +52,21 @@ class AdminModel extends LModel
         $admin->delete();
     }
 
-    public function getOne($id)
+    public function getById($id)
     {
         $where = ['id' => $id];
+        $select = ['id', 'name', 'username', 'phone', 'email', 'c_t'];
+        $admin = $this->find()
+            ->addSelect($select)
+            ->where($where)
+            ->asArray()
+            ->one();
+        return $admin;
+    }
+
+    public function getByUsername($username)
+    {
+        $where = ['username' => $username];
         $select = ['id', 'name', 'username', 'phone', 'email', 'c_t'];
         $admin = $this->find()
             ->addSelect($select)
