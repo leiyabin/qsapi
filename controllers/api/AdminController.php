@@ -58,7 +58,7 @@ class AdminController extends LController
     public function actionEdit()
     {
         $admin = $this->params;
-        $requires = ['id', 'name', 'phone', 'email', 'password'];
+        $requires = ['id', 'name', 'phone', 'email'];
         foreach ($requires as $require) {
             if (empty($this->params[$require])) {
                 throw new RequestException($require . '不能为空', ErrorCode::INVALID_PARAM);
