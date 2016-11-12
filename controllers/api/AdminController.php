@@ -67,4 +67,19 @@ class AdminController extends LController
         AdminModel::model()->modify($admin);
         return $this->success();
     }
+
+    public function actionSetpwd()
+    {
+        $requires = ['id', 'old_password', 'new_password'];
+        foreach ($requires as $require) {
+            if (empty($this->params[$require])) {
+                throw new RequestException($require . '不能为空', ErrorCode::INVALID_PARAM);
+            }
+        }
+        $id = $this->params['id'];
+        $old_password = $this->params['old_password'];
+        $new_password = $this->params['new_password'];
+        AdminManager::setPwd($id, $old_password, $new_password);
+        return $this->success();
+    }
 }

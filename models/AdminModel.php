@@ -52,10 +52,12 @@ class AdminModel extends LModel
         $admin->delete();
     }
 
-    public function getById($id)
+    public function getById($id, $select = [])
     {
         $where = ['id' => $id];
-        $select = ['id', 'name', 'username', 'phone', 'email', 'c_t'];
+        if (empty($select)) {
+            $select = ['id', 'name', 'username', 'phone', 'email', 'c_t'];
+        }
         $admin = $this->find()
             ->addSelect($select)
             ->where($where)
@@ -100,7 +102,7 @@ class AdminModel extends LModel
             throw new RequestException('该管理员不存在', ErrorCode::ACTION_ERROR);
         } else {
             try {
-                if(!empty($data['password'])){
+                if (!empty($data['password'])) {
                     $data['password'] = Utils::lMd5($data['password']);
                 }
                 $admin->setAttributes($data);
@@ -123,5 +125,6 @@ class AdminModel extends LModel
             ['password', 'string', 'min' => 6],
         ];
     }
+
 
 }
