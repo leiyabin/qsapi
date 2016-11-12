@@ -18,9 +18,8 @@ class AdminManager
 {
     public static function add($admin)
     {
-
-        $username = $admin['username'];
-        $user_info = AdminModel::model()->getByUsername($username);
+        $condition = ['username' => $admin['username']];
+        $user_info = AdminModel::model()->getOneByCondition($condition);
         if (empty($user_info)) {
             AdminModel::model()->add($admin);
         } else {
@@ -39,6 +38,14 @@ class AdminManager
         }
         $data = ['id' => $id, 'password' => $new_password];
         AdminModel::model()->modify($data);
+    }
+
+    public static function batchDel(array $ids)
+    {
+        if (in_array(1, $ids)) {
+            throw new RequestException('超级管理员无法删除!', ErrorCode::ACTION_ERROR);
+        }
+        AdminModel::model()->batchDel($ids);
     }
 
 }

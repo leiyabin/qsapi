@@ -27,45 +27,6 @@ class AdminModel extends LModel
         return parent::model();
     }
 
-    public function getList($pageInfo)
-    {
-        $select = ['id', 'name', 'username', 'phone', 'email', 'c_t'];
-        $limit = $pageInfo['limit'];
-        $offset = $pageInfo['offset'];
-        $list = $this->find()
-            ->addSelect($select)
-            ->limit($limit)
-            ->offset($offset)
-            ->addOrderBy(['id' => SORT_DESC])
-            ->asArray()
-            ->all();
-        $total = $this->find()
-            ->addSelect(['id'])
-            ->count('id');
-        $res = ['admin' => $list, 'total' => $total];
-        return $res;
-    }
-
-    public function del($id)
-    {
-        $admin = AdminModel::findOne($id);
-        $admin->delete();
-    }
-
-    public function getById($id, $select = [])
-    {
-        $where = ['id' => $id];
-        if (empty($select)) {
-            $select = ['id', 'name', 'username', 'phone', 'email', 'c_t'];
-        }
-        $admin = $this->find()
-            ->addSelect($select)
-            ->where($where)
-            ->asArray()
-            ->one();
-        return $admin;
-    }
-
     public function getByUsername($username)
     {
         $where = ['username' => $username];

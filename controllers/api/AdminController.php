@@ -13,7 +13,7 @@ use app\consts\ErrorCode;
 use app\exception\RequestException;
 use app\manager\AdminManager;
 use app\models\AdminModel;
-use Yii;
+use app\components\Utils;
 
 
 class AdminController extends LController
@@ -22,7 +22,7 @@ class AdminController extends LController
     public function actionList()
     {
         $pageInfo = $this->pageInfo();
-        $data = AdminModel::model()->getList($pageInfo);
+        $data = AdminModel::model()->getList($pageInfo, 'admin');
         return $this->renderPage($data, $pageInfo);
     }
 
@@ -36,13 +36,13 @@ class AdminController extends LController
         return $this->success($model);
     }
 
-    public function actionDel()
+    public function actionBatchdel()
     {
-        if (empty($this->params['id'])) {
-            throw new RequestException('id参数为空！', ErrorCode::INVALID_PARAM);
+        if (empty($this->params['ids']) && !is_array($this->params['ids'])) {
+            throw new RequestException('ids参数不正确！', ErrorCode::INVALID_PARAM);
         }
-        $id = $this->params['id'];
-        AdminModel::model()->del($id);
+        $ids = $this->params['ids'];
+        AdminManager::batchDel($ids);
         return $this->success();
     }
 
@@ -81,5 +81,21 @@ class AdminController extends LController
         $new_password = $this->params['new_password'];
         AdminManager::setPwd($id, $old_password, $new_password);
         return $this->success();
+    }
+
+    public function actionLogin()
+    {
+        $requires = ['username', 'password'];
+        foreach ($requires as $require) {
+            if (empty($this->params[$require])) {
+                throw new RequestException($require . '不能为空', ErrorCode::INVALID_PARAM);
+            }
+        }
+        $condition = ['username'=>$this->params['username'],'password'=>Utils::lMd5($this->params['username'])];
+        $model = AdminModel::model()->getOneByCondition($condition);
+        if(empty($model)){
+            return $this->error('用户名或密码不正确！');
+        }
+        return $this->success('登录成功！');
     }
 }
