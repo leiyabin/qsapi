@@ -47,18 +47,9 @@ $config = [
             // for the mailer to send real emails.
             'useFileTransport' => true,
         ],
-        'log'           => [
-            'traceLevel' => YII_DEBUG ? 3 : 0,
-            'targets'    => [
-                [
-                    'class'  => 'yii\log\FileTarget',
-                    'levels' => ['error', 'info'],
-                ],
-            ],
-        ],
+        'log'           => require(__DIR__ . '/log.php'),
         'db'            => require(__DIR__ . '/db.php'),
-
-        'urlManager' => [
+        'urlManager'    => [
             'enablePrettyUrl' => true,
             'showScriptName'  => false,
             'rules'           => [

@@ -91,11 +91,11 @@ class AdminController extends LController
                 throw new RequestException($require . '不能为空', ErrorCode::INVALID_PARAM);
             }
         }
-        $condition = ['username'=>$this->params['username'],'password'=>Utils::lMd5($this->params['username'])];
-        $model = AdminModel::model()->getOneByCondition($condition);
-        if(empty($model)){
-            return $this->error('用户名或密码不正确！');
+        $condition = ['username' => $this->params['username'], 'password' => Utils::lMd5($this->params['password'])];
+        $model = AdminModel::model()->getOneByCondition($condition, ['id', 'username']);
+        if (empty($model)) {
+            throw new RequestException('用户名或密码不正确!', ErrorCode::ACTION_ERROR);
         }
-        return $this->success('登录成功！');
+        return $this->success($model);
     }
 }
