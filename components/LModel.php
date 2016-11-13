@@ -7,7 +7,8 @@
  */
 
 namespace app\components;
-
+use app\consts\ErrorCode;
+use app\exception\RequestException;
 
 use yii\db\ActiveRecord;
 
@@ -78,5 +79,39 @@ class LModel extends ActiveRecord
             ->count('id');
         $res = [$list_name => $list, 'total' => $total];
         return $res;
+    }
+
+    public function add($model)
+    {
+        $this->attributes = $model;
+        if ($this->validate()) {
+            try {
+                $this->save();
+            } catch (\Exception $e) {
+                throw new RequestException($e->getMessage(), ErrorCode::SYSTEM_ERROR);
+            }
+        } else {
+            $error_msg = implode('', $this->getFirstErrors());
+            throw new RequestException($error_msg, ErrorCode::INVALID_PARAM);
+        }
+    }
+
+    public function updateByCondition($attributes,$condition)
+    {
+        $id = $data['id'];
+        $admin = AdminModel::findOne($id);
+        if (empty($admin)) {
+            throw new RequestException('该管理员不存在', ErrorCode::ACTION_ERROR);
+        } else {
+            try {
+                if (!empty($data['password'])) {
+                    $data['password'] = Utils::lMd5($data['password']);
+                }
+                $admin->setAttributes($data);
+                $admin->save();
+            } catch (\Exception $e) {
+                throw new RequestException($e->getMessage(), ErrorCode::SYSTEM_ERROR);
+            }
+        }
     }
 }

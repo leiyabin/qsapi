@@ -18,7 +18,5 @@ class IndexController extends LController
     public function actionIndex()
     {
         var_dump(Yii::$app->request->post());die;
-//        var_dump($request);die;
-//        throw new HttpException(500,"连接失败！");
     }
 }
