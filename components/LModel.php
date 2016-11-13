@@ -39,7 +39,7 @@ class LModel extends ActiveRecord
     public function getOneByCondition($condition, $select = ['*'])
     {
         $list = $this->getListByCondition($condition, $select);
-        if (empty($list)) {
+        if (!empty($list)) {
             return current($list);
         }
         return array();
@@ -47,8 +47,9 @@ class LModel extends ActiveRecord
 
     public function batchDel($ids)
     {
+        $class = get_called_class();
         $condition = ['id' => $ids];
-        LModel::deleteAll($condition);
+        $class::deleteAll($condition);
     }
 
     public function getById($id, $select = ['*'])

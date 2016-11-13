@@ -29,7 +29,7 @@ class AdminManager
 
     public static function setPwd($id, $old_password, $new_password)
     {
-        $user_info = AdminModel::model()->getById($id, ['password']);
+        $user_info = AdminModel::model()->getById($id);
         if (empty($user_info)) {
             throw new RequestException('用户不存在！', ErrorCode::ACTION_ERROR);
         }
