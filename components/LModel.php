@@ -7,6 +7,7 @@
  */
 
 namespace app\components;
+
 use app\consts\ErrorCode;
 use app\exception\RequestException;
 
@@ -96,19 +97,23 @@ class LModel extends ActiveRecord
         }
     }
 
-    public function updateByCondition($attributes,$condition)
+    public function updateByCondition($condition, $attributes)
+    {
+        $class = get_called_class();
+        return $class::updateAllCounters($attributes, $condition);
+    }
+
+    public function updateById($data)
     {
         $id = $data['id'];
-        $admin = AdminModel::findOne($id);
-        if (empty($admin)) {
-            throw new RequestException('该管理员不存在', ErrorCode::ACTION_ERROR);
+        $class = get_called_class();
+        $model = $class::findOne($id);
+        if (empty($model)) {
+            throw new RequestException('该条记录不存在', ErrorCode::ACTION_ERROR);
         } else {
             try {
-                if (!empty($data['password'])) {
-                    $data['password'] = Utils::lMd5($data['password']);
-                }
-                $admin->setAttributes($data);
-                $admin->save();
+                $model->setAttributes($data);
+                $model->save();
             } catch (\Exception $e) {
                 throw new RequestException($e->getMessage(), ErrorCode::SYSTEM_ERROR);
             }

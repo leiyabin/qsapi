@@ -8,9 +8,6 @@
 
 namespace app\models;
 use app\components\LModel;
-use app\components\Utils;
-use app\consts\ErrorCode;
-use app\exception\RequestException;
 
 class ValueModel extends LModel
 {
