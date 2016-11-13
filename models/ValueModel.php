@@ -7,6 +7,7 @@
  */
 
 namespace app\models;
+
 use app\components\LModel;
 
 class ValueModel extends LModel
@@ -17,10 +18,21 @@ class ValueModel extends LModel
     }
 
     /**
-     * @return AdminModel
+     * @return ValueModel
      */
     public static function model()
     {
         return parent::model();
     }
+
+    public function rules()
+    {
+        return [
+            [['name', 'class_id'], 'trim'],
+            [['name', 'class_id'], 'required'],
+            ['name', 'string', 'max' => 20],
+            ['class_id', 'integer'],
+        ];
+    }
+
 }

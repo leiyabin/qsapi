@@ -11,7 +11,7 @@ namespace app\components;
 use Yii;
 use yii\web\HttpException;
 use yii\web\ErrorAction;
-use yii\base\Exception;
+use app\consts\LogConst;
 use yii\base\UserException;
 
 class LErrorAction extends ErrorAction
@@ -40,6 +40,11 @@ class LErrorAction extends ErrorAction
                 'msg'  => $message
             ]
         ];
+        $res_json = json_encode($res, JSON_UNESCAPED_UNICODE);
+        $response = sprintf('【RESPONSE】 method: %s url: %s ; params: %s ; result: %s ',
+            Yii::$app->request->getMethod(), Yii::$app->request->getUrl(),
+            json_encode($this->params, JSON_UNESCAPED_UNICODE), $res_json);
+        Yii::error($response, LogConst::RESPONSE);
         return json_encode($res, JSON_UNESCAPED_UNICODE);
     }
 }

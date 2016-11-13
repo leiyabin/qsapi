@@ -7,12 +7,13 @@
  */
 
 namespace app\controllers\api;
+
 use app\components\LController;
 use app\consts\ErrorCode;
 use app\exception\RequestException;
+use app\manager\ConfigManager;
 use app\models\ClassModel;
 use app\models\ValueModel;
-use app\components\Utils;
 
 class ConfigController extends LController
 {
@@ -32,16 +33,14 @@ class ConfigController extends LController
         $model = ClassModel::model()->getById($id);
         return $this->success($model);
     }
-    public function actionAdd()
+
+    public function actionClassadd()
     {
-        if (empty($this->params['name'])) {
-            throw new RequestException('name参数为空！', ErrorCode::INVALID_PARAM);
-        }
         ClassModel::model()->add($this->params);
         return $this->success();
     }
 
-    public function actionEdit()
+    public function actionClassedit()
     {
         $model = $this->params;
         $requires = ['id', 'name'];
@@ -50,7 +49,7 @@ class ConfigController extends LController
                 throw new RequestException($require . '不能为空', ErrorCode::INVALID_PARAM);
             }
         }
-        ClassModel::model()->modify($model);
+        ClassModel::model()->updateById($model);
         return $this->success();
     }
 
@@ -71,25 +70,22 @@ class ConfigController extends LController
         return $this->success($model);
     }
 
-    public function actionAdd()
+    public function actionValueadd()
     {
-        if (empty($this->params['username'])) {
-            throw new RequestException('username参数为空！', ErrorCode::INVALID_PARAM);
-        }
-        AdminManager::add($this->params);
+        ConfigManager::addValue($this->params);
         return $this->success();
     }
 
-    public function actionEdit()
+    public function actionValueedit()
     {
-        $admin = $this->params;
-        $requires = ['id', 'name', 'phone', 'email'];
+        $value = $this->params;
+        $requires = ['id', 'name', 'class_id'];
         foreach ($requires as $require) {
             if (empty($this->params[$require])) {
                 throw new RequestException($require . '不能为空', ErrorCode::INVALID_PARAM);
             }
         }
-        AdminModel::model()->modify($admin);
+        ValueModel::model()->updateById($value);
         return $this->success();
     }
 }

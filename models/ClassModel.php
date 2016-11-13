@@ -17,10 +17,19 @@ class ClassModel extends LModel
     }
 
     /**
-     * @return AdminModel
+     * @return ClassModel
      */
     public static function model()
     {
         return parent::model();
+    }
+
+    public function rules()
+    {
+        return [
+            [['name'], 'trim'],
+            [['name'], 'required'],
+            ['name', 'string', 'max' => 20],
+        ];
     }
 }

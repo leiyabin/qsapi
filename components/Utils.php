@@ -37,4 +37,13 @@ class Utils
         $date_time_str = date('Y-m-d', $timestamp);
         return strtotime($date_time_str);
     }
+
+    public static function buildIdArray(array $array)
+    {
+        $new_array = [];
+        foreach ($array as $value){
+            $new_array[$value['id']] = $value;
+        }
+        return $new_array;
+    }
 }

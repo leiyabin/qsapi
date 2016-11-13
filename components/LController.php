@@ -9,11 +9,10 @@
 namespace app\components;
 
 
-use app\consts\ErrorCode;
+use app\consts\LogConst;
 use app\consts\MsgConst;
 use yii\web\Controller;
 use Yii;
-use app\components\Utils;
 
 class LController extends Controller
 {
@@ -24,8 +23,6 @@ class LController extends Controller
         $getParams = Yii::$app->request->get();
         $postParams = Yii::$app->request->post();
         $this->params = array_merge($getParams, $postParams);
-        Yii::info(sprintf('%s %s %s', Yii::$app->request->getMethod(), Yii::$app->request->getUrl(),
-            json_encode($this->params, JSON_UNESCAPED_UNICODE)));
     }
 
     public $enableCsrfValidation = false;
@@ -60,7 +57,12 @@ class LController extends Controller
     {
         header("Content-type:application/json;charset=utf-8");
         $res = ['ret' => 1, 'data' => $data];
-        return json_encode($res, JSON_UNESCAPED_UNICODE);
+        $res_json = json_encode($res,JSON_UNESCAPED_UNICODE);
+        $response = sprintf('【RESPONSE】 method: %s url: %s ; params: %s ; result: %s ',
+            Yii::$app->request->getMethod(), Yii::$app->request->getUrl(),
+            json_encode($this->params, JSON_UNESCAPED_UNICODE), $res_json);
+        Yii::info($response, LogConst::RESPONSE);
+        return $res_json;
     }
 
     public function renderPage($data, $page_info)
@@ -78,5 +80,13 @@ class LController extends Controller
         $info['offset'] = ($info['page'] - 1) * $info['per_page'];
         $info['limit'] = $info['per_page'];
         return $info;
+    }
+
+    public function beforeAction($action)
+    {
+        $request = sprintf('【REQUEST】 method: %s url: %s ; params: %s',
+            Yii::$app->request->getMethod(), Yii::$app->request->getUrl(), json_encode($this->params, JSON_UNESCAPED_UNICODE));
+        Yii::info($request, LogConst::REQUEST);
+        return parent::beforeAction($action);
     }
 }
