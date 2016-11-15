@@ -78,6 +78,7 @@ class LModel extends ActiveRecord
             ->all();
         $total = $this->find()
             ->addSelect(['id'])
+            ->where($condition)
             ->count('id');
         $res = [$list_name => $list, 'total' => $total];
         return $res;

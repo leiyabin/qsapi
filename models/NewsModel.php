@@ -7,9 +7,21 @@
  */
 
 namespace app\models;
+use app\components\LModel;
 
-
-class NewsModel
+class NewsModel extends LModel
 {
+    public static function tableName()
+    {
+        return '{{%news}}';
+    }
+
+    /**
+     * @return NewsModel
+     */
+    public static function model()
+    {
+        return parent::model();
+    }
 
 }

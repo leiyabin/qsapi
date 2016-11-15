@@ -63,8 +63,7 @@ class ConfigController extends LController
         if (!empty($this->params['value'])) {
             $condition['value'] = $this->params['value'];
         }
-
-        $data = ConfigManager::getValueList($pageInfo, 'value_list');
+        $data = ConfigManager::getValueList($pageInfo, 'value_list', $condition);
         return $this->renderPage($data, $pageInfo);
     }
 
@@ -80,6 +79,9 @@ class ConfigController extends LController
 
     public function actionValueadd()
     {
+        if (empty($this->params['class_id'])) {
+            throw new RequestException('class_id不能为空', ErrorCode::INVALID_PARAM);
+        }
         ConfigManager::addValue($this->params);
         return $this->success();
     }

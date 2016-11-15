@@ -34,8 +34,8 @@ class ConfigManager
         $data = ValueModel::model()->getList($page_info, $list_name, $condition);
         if (!empty($data[$list_name])) {
             $value_list = $data[$list_name];
-            $value_ids = array_column($value_list, 'class_id');
-            $class_list = ClassModel::model()->getListByCondition(['id' => $value_ids]);
+            $class_ids = array_column($value_list, 'class_id');
+            $class_list = ClassModel::model()->getListByCondition(['id' => $class_ids]);
             $class_list = Utils::buildIdArray($class_list);
             foreach ($value_list as $key => $value) {
                 if (!isset($class_list[$value['class_id']])) {
