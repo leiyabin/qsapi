@@ -17,7 +17,7 @@ use app\models\NewsModel;
 
 class NewsController extends LController
 {
-    public function actionNewslist()
+    public function actionlist()
     {
         $pageInfo = $this->pageInfo();
         $condition = [];
@@ -31,7 +31,7 @@ class NewsController extends LController
         return $this->renderPage($data, $pageInfo);
     }
 
-    public function actionGetnews()
+    public function actionGet()
     {
         if (empty($this->params['id'])) {
             throw new RequestException('id参数为空！', ErrorCode::INVALID_PARAM);
@@ -41,7 +41,7 @@ class NewsController extends LController
         return $this->success($model);
     }
 
-    public function actionNewsadd()
+    public function actionAdd()
     {
         if (empty($this->params['class_id'])) {
             throw new RequestException('class_id不能为空', ErrorCode::INVALID_PARAM);
@@ -50,7 +50,7 @@ class NewsController extends LController
         return $this->success();
     }
 
-    public function actionNewsedit()
+    public function actionEdit()
     {
         $value = $this->params;
         $requires = ['id', 'title', 'class_id', 'summary', 'content'];
@@ -60,6 +60,16 @@ class NewsController extends LController
             }
         }
         NewsModel::model()->updateById($value);
+        return $this->success();
+    }
+
+    public function actionBatchdel()
+    {
+        if (empty($this->params['ids']) && !is_array($this->params['ids'])) {
+            throw new RequestException('ids参数不正确！', ErrorCode::INVALID_PARAM);
+        }
+        $ids = $this->params['ids'];
+        NewsModel::model()->batchDel($ids);
         return $this->success();
     }
 }
