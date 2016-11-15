@@ -11,6 +11,7 @@ namespace app\components;
 
 use app\consts\LogConst;
 use app\consts\MsgConst;
+use yii\base\Exception;
 use yii\web\Controller;
 use Yii;
 
@@ -57,7 +58,7 @@ class LController extends Controller
     {
         header("Content-type:application/json;charset=utf-8");
         $res = ['ret' => 1, 'data' => $data];
-        $res_json = json_encode($res,JSON_UNESCAPED_UNICODE);
+        $res_json = json_encode($res, JSON_UNESCAPED_UNICODE);
         $response = sprintf('【RESPONSE】 method: %s url: %s ; params: %s ; result: %s ',
             Yii::$app->request->getMethod(), Yii::$app->request->getUrl(),
             json_encode($this->params, JSON_UNESCAPED_UNICODE), $res_json);
@@ -88,5 +89,42 @@ class LController extends Controller
             Yii::$app->request->getMethod(), Yii::$app->request->getUrl(), json_encode($this->params, JSON_UNESCAPED_UNICODE));
         Yii::info($request, LogConst::REQUEST);
         return parent::beforeAction($action);
+    }
+
+    public function runAction($id, $params = [])
+    {
+        try {
+            return parent::runAction($id, $params);
+        } catch (\Exception $e) {
+            $error_string = sprintf('【error】 MSG:%s ;TRACE:%s ', $e->getMessage(), $e->getTraceAsString());
+            Yii::error($error_string);
+            $this->renderError($e->getCode(), $e->getMessage());
+        }
+    }
+
+    private function renderError($error_code, $error_msg)
+    {
+        header("Content-type:application/json;charset=utf-8");
+        $res = [
+            'ret'  => 0,
+            'data' => [
+                'code' => $error_code,
+                'msg'  => $error_msg
+            ]
+        ];
+        $res_json = json_encode($res, JSON_UNESCAPED_UNICODE);
+        $response = sprintf('【RESPONSE】 method: %s url: %s ; params: %s ; result: %s ',
+            Yii::$app->request->getMethod(), Yii::$app->request->getUrl(),
+            json_encode($this->params, JSON_UNESCAPED_UNICODE), $res_json);
+        Yii::error($response, LogConst::RESPONSE);
+        return json_encode($res, JSON_UNESCAPED_UNICODE);
+    }
+
+    protected function getRequestParam($field, $default = null)
+    {
+        if (empty($this->params[$field])) {
+            return $default;
+        }
+        return $this->params[$field];
     }
 }

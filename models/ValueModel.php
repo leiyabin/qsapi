@@ -28,9 +28,9 @@ class ValueModel extends LModel
     public function rules()
     {
         return [
-            [['name', 'class_id'], 'trim'],
-            [['name', 'class_id'], 'required'],
-            ['name', 'string', 'max' => 20],
+            [['value', 'class_id'], 'trim'],
+            [['value', 'class_id'], 'required'],
+            ['value', 'string', 'max' => 20],
             ['class_id', 'integer'],
         ];
     }

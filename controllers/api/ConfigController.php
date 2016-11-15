@@ -20,7 +20,7 @@ class ConfigController extends LController
     public function actionClasslist()
     {
         $pageInfo = $this->pageInfo();
-        $data = ClassModel::model()->getList($pageInfo, 'class');
+        $data = ClassModel::model()->getList($pageInfo, 'class_list');
         return $this->renderPage($data, $pageInfo);
     }
 
@@ -56,7 +56,15 @@ class ConfigController extends LController
     public function actionValuelist()
     {
         $pageInfo = $this->pageInfo();
-        $data = ValueModel::model()->getList($pageInfo, 'class_info');
+        $condition = [];
+        if (!empty($this->params['class_id'])) {
+            $condition['class_id'] = $this->params['class_id'];
+        }
+        if (!empty($this->params['value'])) {
+            $condition['value'] = $this->params['value'];
+        }
+
+        $data = ConfigManager::getValueList($pageInfo, 'value_list');
         return $this->renderPage($data, $pageInfo);
     }
 
@@ -79,7 +87,7 @@ class ConfigController extends LController
     public function actionValueedit()
     {
         $value = $this->params;
-        $requires = ['id', 'name', 'class_id'];
+        $requires = ['id', 'value', 'class_id'];
         foreach ($requires as $require) {
             if (empty($this->params[$require])) {
                 throw new RequestException($require . '不能为空', ErrorCode::INVALID_PARAM);

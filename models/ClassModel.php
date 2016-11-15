@@ -7,6 +7,7 @@
  */
 
 namespace app\models;
+
 use app\components\LModel;
 
 class ClassModel extends LModel

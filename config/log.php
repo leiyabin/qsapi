@@ -50,5 +50,17 @@ return [
             'categories' => ['rpc'],
             'logFile'    => '@app/runtime/logs/rpc.info.log'
         ],
+        [
+            'class'      => 'yii\log\FileTarget',
+            'levels'     => ['info'],
+            'categories' => ['application'],
+            'logFile'    => '@app/runtime/logs/app.info.log'
+        ],
+        [
+            'class'      => 'yii\log\FileTarget',
+            'levels'     => ['error'],
+            'categories' => ['application'],
+            'logFile'    => '@app/runtime/logs/app.error.log'
+        ]
     ],
 ];

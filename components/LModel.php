@@ -64,12 +64,13 @@ class LModel extends ActiveRecord
         return $model;
     }
 
-    public function getList($page_info, $list_name, $select = ['*'])
+    public function getList($page_info, $list_name, $condition = [], $select = ['*'])
     {
         $limit = $page_info['limit'];
         $offset = $page_info['offset'];
         $list = $this->find()
             ->addSelect($select)
+            ->where($condition)
             ->limit($limit)
             ->offset($offset)
             ->addOrderBy(['id' => SORT_DESC])
