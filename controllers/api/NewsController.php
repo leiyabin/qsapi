@@ -17,7 +17,7 @@ use app\models\NewsModel;
 
 class NewsController extends LController
 {
-    public function actionlist()
+    public function actionList()
     {
         $pageInfo = $this->pageInfo();
         $condition = [];
