@@ -52,14 +52,14 @@ class NewsController extends LController
 
     public function actionEdit()
     {
-        $value = $this->params;
+        $news = $this->params;
         $requires = ['id', 'title', 'class_id', 'summary', 'content'];
         foreach ($requires as $require) {
             if (empty($this->params[$require])) {
                 throw new RequestException($require . '不能为空', ErrorCode::INVALID_PARAM);
             }
         }
-        NewsModel::model()->updateById($value);
+        NewsModel::model()->updateById($news);
         return $this->success();
     }
 
