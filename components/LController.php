@@ -28,25 +28,6 @@ class LController extends Controller
 
     public $enableCsrfValidation = false;
 
-//    /**
-//     * ajax错误信息
-//     *
-//     * @param $msg
-//     * @param $code
-//     * @return mixed
-//     */
-//    public function error($msg = MsgConst::DO_FAILED, $code = ErrorCode::SYSTEM_ERROR)
-//    {
-//        header("Content-type:application/json;charset=utf-8");
-//        $res = [
-//            'ret'  => 0,
-//            'data' => [
-//                'code' => $code,
-//                'msg'  => $msg
-//            ]
-//        ];
-//        return json_encode($res, JSON_UNESCAPED_UNICODE);
-//    }
 
     /**
      * ajax成功信息
@@ -128,4 +109,5 @@ class LController extends Controller
         }
         return $this->params[$field];
     }
+
 }

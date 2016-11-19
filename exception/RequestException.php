@@ -8,7 +8,6 @@
 
 namespace app\exception;
 
-
 use yii\base\UserException;
 
 class RequestException extends UserException

@@ -2,23 +2,23 @@
 /**
  * Created by PhpStorm.
  * User: lyb
- * Date: 2016/11/14
- * Time: 23:37
+ * Date: 2016/11/19
+ * Time: 22:50
  */
 
 namespace app\models;
 
 use app\components\LModel;
 
-class NewsModel extends LModel
+class IntroductionModel extends LModel
 {
     public static function tableName()
     {
-        return '{{%news}}';
+        return '{{%introduction}}';
     }
 
     /**
-     * @return NewsModel
+     * @return IntroductionModel
      */
     public static function model()
     {
@@ -32,10 +32,6 @@ class NewsModel extends LModel
             [['class_id', 'title', 'summary', 'content'], 'required'],
             ['title', 'string', 'max' => 50],
             ['summary', 'string', 'max' => 160],
-            ['img', 'string', 'max' => 50],
-            ['recommend_img', 'string', 'max' => 50],
-            ['hot_img', 'string', 'max' => 50],
         ];
     }
-
 }
