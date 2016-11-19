@@ -117,7 +117,8 @@ class LController extends Controller
             Yii::$app->request->getMethod(), Yii::$app->request->getUrl(),
             json_encode($this->params, JSON_UNESCAPED_UNICODE), $res_json);
         Yii::error($response, LogConst::RESPONSE);
-        return json_encode($res, JSON_UNESCAPED_UNICODE);
+        echo $res_json;
+        exit ();
     }
 
     protected function getRequestParam($field, $default = null)

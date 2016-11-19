@@ -33,6 +33,9 @@ class NewsModel extends LModel
             ['title', 'string', 'max' => 50],
             ['summary', 'string', 'max' => 160],
             ['content', 'string', 'max' => 50],
+            ['img', 'string', 'max' => 50],
+            ['recommend_img', 'string', 'max' => 50],
+            ['hot_img', 'string', 'max' => 50],
         ];
     }
 
