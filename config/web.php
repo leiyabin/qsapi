@@ -26,26 +26,8 @@ $config = [
         'cache'         => [
             'class' => 'yii\caching\FileCache',
         ],
-        'user'          => [
-            'identityClass'   => 'app\models\User',
-            'enableAutoLogin' => true,
-        ],
-        //后台用户
-        'administrator' => [
-            'class'           => 'yii\web\User',
-            'loginUrl'        => ['admin/auth/login'],
-            'identityClass'   => 'app\models\Administrator',
-            'enableAutoLogin' => true,
-        ],
         'errorHandler'  => [
             'errorAction' => 'site/error',
-        ],
-        'mailer'        => [
-            'class'            => 'yii\swiftmailer\Mailer',
-            // send all mails to a file by default. You have to set
-            // 'useFileTransport' to false and configure a transport
-            // for the mailer to send real emails.
-            'useFileTransport' => true,
         ],
         'log'           => require(__DIR__ . '/log.php'),
         'db'            => require(__DIR__ . '/db.php'),

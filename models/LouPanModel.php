@@ -7,9 +7,10 @@
  */
 
 namespace app\models;
+
 use app\components\LModel;
 
-class LouPanModel  extends LModel
+class LouPanModel extends LModel
 {
     public static function tableName()
     {
@@ -27,10 +28,17 @@ class LouPanModel  extends LModel
     public function rules()
     {
         return [
-            [['name', 'opening_time', 'jiju', 'area_bottom', 'area_top', 'price', 'img','address'], 'trim'],
-            [['name', 'phone', 'email', 'mobilephone', 'praise', 'position', 'img'], 'required'],
-//            ['value', 'string', 'max' => 20],
-//            ['class_id', 'integer'],
+            [['name', 'average_price', 'address', 'sale_office_address', 'opening_time', 'area_id', 'property_kind_id',
+                'sale_status', 'jiju', 'min_square', 'max_square', 'lan', 'lat', 'developers', 'property_company', 'price',
+                'img', 'wuyeleixing', 'right_time'], 'trim'],
+            [['name', 'average_price', 'address', 'sale_office_address', 'opening_time', 'area_id', 'property_kind_id',
+                'sale_status', 'jiju', 'min_square', 'max_square', 'lan', 'lat', 'developers', 'property_company', 'price',
+                'img', 'wuyeleixing', 'right_time'], 'required'],
+            [['average_price', 'opening_time', 'area_id', 'property_kind_id', 'sale_status', 'min_square', 'max_square',
+                'price', 'wuyeleixing', 'right_time'], 'integer'],
+            [['lan', 'lat'], 'double'],
+            [['name', 'jiju'], 'string', 'max' => 30],
+            [['address', 'sale_office_address', 'developers', 'property_company', 'img'], 'string', 'max' => 50]
         ];
     }
 }

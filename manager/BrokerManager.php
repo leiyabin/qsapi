@@ -18,14 +18,14 @@ use Yii;
 
 class BrokerManager
 {
-    public static function add($introduction)
+    public static function add($broker)
     {
-        $id = $introduction['position_id'];
+        $id = $broker['position_id'];
         $class = ValueModel::model()->getById($id);
         if (empty($class)) {
             throw new RequestException('职位不存在！', ErrorCode::ACTION_ERROR);
         } else {
-            BrokerModel::model()->add($introduction);
+            BrokerModel::model()->add($broker);
         }
     }
 

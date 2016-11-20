@@ -7,6 +7,7 @@
  */
 
 namespace app\controllers\api;
+
 use app\components\LController;
 use app\consts\ErrorCode;
 use app\exception\RequestException;
@@ -44,6 +45,9 @@ class BrokerController extends LController
         if (empty($this->params['position_id'])) {
             throw new RequestException('position_id不能为空', ErrorCode::INVALID_PARAM);
         }
+        if (empty($this->params['code'])) {
+            $this->params['code'] = $this->getPraiseNum();
+        }
         BrokerManager::add($this->params);
         return $this->success();
     }
@@ -51,7 +55,7 @@ class BrokerController extends LController
     public function actionEdit()
     {
         $broker = $this->params;
-        $requires = ['id', 'name', 'position_id', 'mobilephone', 'phone', 'praise'];
+        $requires = ['id', 'name', 'position_id', 'phone'];
         foreach ($requires as $require) {
             if (empty($this->params[$require])) {
                 throw new RequestException($require . '不能为空', ErrorCode::INVALID_PARAM);
@@ -69,5 +73,12 @@ class BrokerController extends LController
         $ids = $this->params['ids'];
         BrokerModel::model()->batchDel($ids);
         return $this->success();
+    }
+
+    private function getPraiseNum()
+    {
+        $arr = range(90, 99);
+        shuffle($arr);
+        return current($arr);
     }
 }
