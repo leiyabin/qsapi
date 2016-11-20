@@ -27,8 +27,8 @@ class BrokerModel extends LModel
     public function rules()
     {
         return [
-            [['name', 'phone', 'email', 'mobilephone', 'praise', 'position', 'img'], 'trim'],
-            [['name', 'phone', 'email', 'mobilephone', 'praise', 'position', 'img'], 'required'],
+            [['name', 'phone', 'email', 'mobilephone', 'praise', 'position_id', 'img'], 'trim'],
+            [['name', 'phone', 'mobilephone', 'praise', 'position_id'], 'required'],
 //            ['value', 'string', 'max' => 20],
 //            ['class_id', 'integer'],
         ];
