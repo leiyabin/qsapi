@@ -2,23 +2,24 @@
 /**
  * Created by PhpStorm.
  * User: lyb
- * Date: 2016/11/19
- * Time: 22:50
+ * Date: 2016/11/20
+ * Time: 14:15
  */
 
 namespace app\models;
 
+
 use app\components\LModel;
 
-class IntroductionModel extends LModel
+class AreaModel extends LModel
 {
     public static function tableName()
     {
-        return '{{%introduction}}';
+        return '{{%area}}';
     }
 
     /**
-     * @return IntroductionModel
+     * @return AreaModel
      */
     public static function model()
     {
@@ -28,9 +29,10 @@ class IntroductionModel extends LModel
     public function rules()
     {
         return [
-            [['class_id', 'title', 'summary', 'content','img'], 'trim'],
-            ['title', 'string', 'max' => 50],
-            ['summary', 'string', 'max' => 160],
+            [['name', 'class_id'], 'trim'],
+            [['name', 'class_id'], 'required'],
+            ['name', 'string', 'max' => 20],
+            ['class_id', 'integer'],
         ];
     }
 }
