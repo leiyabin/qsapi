@@ -90,12 +90,32 @@ class LModel extends ActiveRecord
         if ($this->validate()) {
             try {
                 $this->save();
+                return $this->attributes['id'];
             } catch (\Exception $e) {
                 throw new RequestException($e->getMessage(), ErrorCode::SYSTEM_ERROR);
             }
         } else {
             $error_msg = implode('', $this->getFirstErrors());
             throw new RequestException($error_msg, ErrorCode::INVALID_PARAM);
+        }
+    }
+
+    public function batchAdd($model_list)
+    {
+        $model = new static();
+        foreach ($model_list as $key => $value) {
+            $model->isNewRecord = true;
+            if ($model->validate()) {
+                try {
+                    $model->setAttributes($value);
+                    $model->save() && $model->id = 0;
+                } catch (\Exception $e) {
+                    throw new RequestException($e->getMessage(), ErrorCode::SYSTEM_ERROR);
+                }
+            } else {
+                $error_msg = implode('', $model->getFirstErrors());
+                throw new RequestException($error_msg, ErrorCode::INVALID_PARAM);
+            }
         }
     }
 
