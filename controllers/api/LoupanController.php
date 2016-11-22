@@ -12,7 +12,6 @@ use app\components\LController;
 use app\consts\ErrorCode;
 use app\exception\RequestException;
 use app\manager\LoupanManager;
-use app\models\LouPanModel;
 
 class LoupanController extends LController
 {
@@ -50,10 +49,35 @@ class LoupanController extends LController
 
     public function actionAdd()
     {
-        if (empty($this->params['class_id'])) {
-            throw new RequestException('class_id不能为空', ErrorCode::INVALID_PARAM);
+        $requires = [
+            'name', 'average_price', 'address', 'sale_office_address', 'opening_time', 'area_id', 'property_type_id',
+            'sale_status', 'jiju', 'min_square', 'max_square', 'lan', 'lat', 'developers',
+            'property_company', 'img', 'banner_img', 'right_time', 'remark', 'tag', 'img_1', 'img_2', 'img_3', 'img_4'
+        ];
+        $this->checkEmpty($requires);
+        if (!isset($this->params['img_5'])) {
+            $this->params['img_5'] = '';
         }
-        LoupanManager::add($this->params);
+        LoupanManager::addLoupan($this->params);
+        return $this->success();
+    }
+
+    public function actionEdit()
+    {
+        $requires = [
+            'id', 'name', 'average_price', 'address', 'sale_office_address', 'opening_time', 'area_id', 'property_type_id',
+            'sale_status', 'jiju', 'min_square', 'max_square', 'lan', 'lat', 'developers',
+            'property_company', 'img', 'banner_img', 'right_time', 'remark', 'tag', 'img_1', 'img_2', 'img_3', 'img_4'
+        ];
+        $this->checkEmpty($requires);
+        if (!isset($this->params['img_5'])) {
+            $this->params['img_5'] = '';
+        }
+        LoupanManager::->updateById($news);
+        return $this->success();
+        $requires = ['area_id', 'property_type_id', 'sale_status'];
+        $this->checkEmpty($requires);
+        LoupanManager::addLoupan($this->params);
         return $this->success();
     }
 }

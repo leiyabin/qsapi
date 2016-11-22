@@ -13,9 +13,11 @@ use app\consts\ErrorCode;
 use app\consts\HouseConst;
 use app\consts\LogConst;
 use app\exception\RequestException;
+use app\models\AreaModel;
 use app\models\DoorModel;
 use app\models\HouseImgModel;
 use app\models\LouPanModel;
+use app\models\ValueModel;
 use Yii;
 
 class LoupanManager
@@ -44,6 +46,13 @@ class LoupanManager
         return $list;
     }
 
+    public static function getDoorModel($id)
+    {
+        $door_model = DoorModel::model()->getById($id);
+        $door_model['decoration_name'] = HouseConst::$decoration[$door_model['decoration']];
+        return $door_model;
+    }
+
     private static function buildTagMap($tag_str)
     {
         $map = [];
@@ -56,18 +65,36 @@ class LoupanManager
 
     public static function addLoupan($loupan)
     {
-        $loupan_filed = ['name', 'average_price', 'address', 'sale_office_address', 'opening_time', 'area_id',
+        self::checkLoupan($loupan);
+        $loupan_filed = [
+            'name', 'average_price', 'address', 'sale_office_address', 'opening_time', 'area_id',
             'property_type_id', 'sale_status', 'jiju', 'min_square', 'max_square', 'lan', 'lat',
-            'developers', 'property_company', 'price', 'img', 'banner_img', 'right_time', 'remark', 'tag', 'is_deleted'
+            'developers', 'property_company', 'img', 'banner_img', 'right_time', 'remark', 'tag', 'is_deleted'
         ];
         $loupan_model = self::getFiled($loupan, $loupan_filed);
         $loupan_id = LouPanModel::model()->add($loupan_model);
+        $house_img_field = ['img_1', 'img_2', 'img_3', 'img_4', 'img_5'];
+        $house_img_model = self::getFiled($loupan, $house_img_field);
+        $house_img_model['object_id'] = $loupan_id;
+        $house_img_model['type'] = HouseConst::HOUSE_TYPE_NEW;
+        HouseImgModel::model()->add($house_img_model);
+    }
+
+    public static function editLoupan($loupan)
+    {
+        self::checkLoupan($loupan);
+        $loupan_filed = [
+            'id', 'name', 'average_price', 'address', 'sale_office_address', 'opening_time', 'area_id',
+            'property_type_id', 'sale_status', 'jiju', 'min_square', 'max_square', 'lan', 'lat',
+            'developers', 'property_company', 'img', 'banner_img', 'right_time', 'remark', 'tag', 'is_deleted'
+        ];
+        $loupan_model = self::getFiled($loupan, $loupan_filed);
+        LouPanModel::model()->updateById($loupan_model);
         $house_img_model = $loupan['house_img'];
-        foreach ($house_img_model as $key => $value) {
-            $house_img_model[$key]['object_id'] = $loupan_id;
-            $house_img_model[$key]['type'] = HouseConst::HOUSE_TYPE_NEW;
-        }
-        HouseImgModel::model()->batchAdd($house_img_model);
+        $condition = ['object_id' => $loupan['id'], 'type' => HouseConst::HOUSE_TYPE_NEW];
+
+        $attributes = [''];
+        HouseImgModel::model()->updateByCondition($house_img_model);
     }
 
     public static function addDoorModel($door_model)
@@ -94,6 +121,23 @@ class LoupanManager
         }
     }
 
+    private static function checkLoupan($loupan)
+    {
+        $area_id = $loupan['area_id'];
+        $property_type_id = $loupan['property_type_id'];
+        $sale_status = $loupan['sale_status'];
+        if (!isset(HouseConst::$sale_status[$sale_status])) {
+            throw new RequestException('销售状态不正确', ErrorCode::ACTION_ERROR);
+        }
+        if (!isset(HouseConst::$property_type[$property_type_id])) {
+            throw new RequestException('物业类型不正确', ErrorCode::ACTION_ERROR);
+        }
+        $area = AreaModel::model()->getById($area_id);
+        if (empty($area)) {
+            throw new RequestException('片区不正确', ErrorCode::ACTION_ERROR);
+        }
+    }
+
     private static function getFiled($arr, $field_list)
     {
         $res = [];
@@ -109,15 +153,26 @@ class LoupanManager
     {
         //楼盘详情页信息
         $loupan = LouPanModel::model()->getById($id);
+        $area = ValueModel::model()->getById($loupan['area_id']);
+        if (empty($area)) {
+            $error_msg = sprintf('片区不存在： loupan_id: %d ,area_id: %d', $id, $loupan['area_id']);
+            Yii::error($error_msg, LogConst::APPLICATION);
+            throw new RequestException('片区不存在', ErrorCode::SYSTEM_ERROR);
+        }
+        $loupan['sale_status_name'] = HouseConst::$sale_status[$loupan['sale_status']];
+        $loupan['property_type'] = HouseConst::$property_type[$loupan['property_type_id']];
+        $loupan['tag_map'] = self::buildTagMap($loupan['tag']);
         $loupan['door_model_list'] = self::getDoorModelList($id);
-        $loupan['house_img'] = self::getLoupanImgList($id);
+        $house_imgs = self::getLoupanImgs($id);
+        $loupan = array_merge($loupan, $house_imgs);
         return $loupan;
     }
 
-    private static function getLoupanImgList($loupan_id)
+    private static function getLoupanImgs($loupan_id)
     {
         $condition = ['object_id' => $loupan_id, 'type' => HouseConst::HOUSE_TYPE_NEW];
-        return HouseImgModel::model()->getListByCondition($condition);
+        $select = ['img_1', 'img_2', 'img_3', 'img_4', 'img_5'];
+        return HouseImgModel::model()->getOneByCondition($condition, $select);
     }
 
 }

@@ -28,10 +28,10 @@ class HouseImgModel extends LModel
     public function rules()
     {
         return [
-            [['type', 'object_id', 'img'], 'trim'],
-            [['type', 'object_id', 'img'], 'required'],
+            [['type', 'object_id', 'img_1', 'img_2', 'img_3', 'img_4', 'img_5'], 'trim'],
+            [['type', 'object_id', 'img_1', 'img_2', 'img_3', 'img_4'], 'required'],
             [['type', 'object_id'], 'integer'],
-            ['img', 'string', 'max' => 50]
+            [['img_1', 'img_2', 'img_3', 'img_4', 'img_5'], 'string', 'max' => 50]
         ];
     }
 }

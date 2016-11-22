@@ -30,7 +30,7 @@ class DoormodelController extends LController
         if (empty($this->params['id'])) {
             throw new RequestException('id不能为空！', ErrorCode::INVALID_PARAM);
         }
-        $data = DoorModel::model()->getById($this->params['id']);
+        $data = LoupanManager::getDoorModel($this->params['id']);
         return $this->success($data);
     }
 
