@@ -73,11 +73,7 @@ class LoupanController extends LController
         if (!isset($this->params['img_5'])) {
             $this->params['img_5'] = '';
         }
-        LoupanManager::->updateById($news);
-        return $this->success();
-        $requires = ['area_id', 'property_type_id', 'sale_status'];
-        $this->checkEmpty($requires);
-        LoupanManager::addLoupan($this->params);
+        LoupanManager::editLoupan($this->params);
         return $this->success();
     }
 }

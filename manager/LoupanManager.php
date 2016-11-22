@@ -90,11 +90,10 @@ class LoupanManager
         ];
         $loupan_model = self::getFiled($loupan, $loupan_filed);
         LouPanModel::model()->updateById($loupan_model);
-        $house_img_model = $loupan['house_img'];
+        $house_img_field = ['img_1', 'img_2', 'img_3', 'img_4', 'img_5'];
+        $house_img_model = self::getFiled($loupan, $house_img_field);
         $condition = ['object_id' => $loupan['id'], 'type' => HouseConst::HOUSE_TYPE_NEW];
-
-        $attributes = [''];
-        HouseImgModel::model()->updateByCondition($house_img_model);
+        HouseImgModel::model()->updateByCondition($condition, $house_img_model);
     }
 
     public static function addDoorModel($door_model)
