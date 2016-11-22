@@ -44,8 +44,7 @@ class LoupanController extends LController
         if (empty($this->params['id'])) {
             throw new RequestException('id参数为空！', ErrorCode::INVALID_PARAM);
         }
-        $id = $this->params['id'];
-        $model = LouPanModel::model()->getById($id);
+        $model = LoupanManager::getLoupan($this->params['id']);
         return $this->success($model);
     }
 
@@ -54,7 +53,7 @@ class LoupanController extends LController
         if (empty($this->params['class_id'])) {
             throw new RequestException('class_id不能为空', ErrorCode::INVALID_PARAM);
         }
-        NewsManager::addNews($this->params);
+        LoupanManager::add($this->params);
         return $this->success();
     }
 }

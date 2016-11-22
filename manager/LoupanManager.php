@@ -34,6 +34,16 @@ class LoupanManager
         return $data;
     }
 
+    public static function getDoorModelList($loupan_id)
+    {
+        $condition = ['loupan_id' => $loupan_id];
+        $list = DoorModel::model()->getListByCondition($condition);
+        foreach ($list as $key => $value) {
+            $list[$key]['decoration_name'] = HouseConst::$decoration[$value['decoration']];
+        }
+        return $list;
+    }
+
     private static function buildTagMap($tag_str)
     {
         $map = [];
@@ -55,25 +65,33 @@ class LoupanManager
         $house_img_model = $loupan['house_img'];
         foreach ($house_img_model as $key => $value) {
             $house_img_model[$key]['object_id'] = $loupan_id;
-            $house_img_model[$key]['type'] = HouseConst::HOUSE_IMG_TYPE_NEW;
+            $house_img_model[$key]['type'] = HouseConst::HOUSE_TYPE_NEW;
         }
         HouseImgModel::model()->batchAdd($house_img_model);
     }
 
-    public static function addDoorModels($door_model)
+    public static function addDoorModel($door_model)
+    {
+        self::checkDoorModel($door_model);
+        DoorModel::model()->add($door_model);
+    }
+
+    public static function editDoorModel($door_model)
+    {
+        self::checkDoorModel($door_model);
+        DoorModel::model()->updateById($door_model);
+    }
+
+    private static function checkDoorModel($door_model)
     {
         $loupan_id = $door_model['loupan_id'];
         $loupan = LouPanModel::model()->getById($loupan_id);
         if (empty($loupan)) {
             throw new RequestException('楼盘不存在！', ErrorCode::ACTION_ERROR);
-        } else {
-            DoorModel::model()->add($door_model);
         }
-    }
-
-    public static function edit($loupan)
-    {
-
+        if (!in_array($door_model['decoration'], HouseConst::$decoration)) {
+            throw new RequestException('装修情况不存在！', ErrorCode::ACTION_ERROR);
+        }
     }
 
     private static function getFiled($arr, $field_list)
@@ -90,6 +108,16 @@ class LoupanManager
     public static function getLoupan($id)
     {
         //楼盘详情页信息
+        $loupan = LouPanModel::model()->getById($id);
+        $loupan['door_model_list'] = self::getDoorModelList($id);
+        $loupan['house_img'] = self::getLoupanImgList($id);
+        return $loupan;
+    }
+
+    private static function getLoupanImgList($loupan_id)
+    {
+        $condition = ['object_id' => $loupan_id, 'type' => HouseConst::HOUSE_TYPE_NEW];
+        return HouseImgModel::model()->getListByCondition($condition);
     }
 
 }

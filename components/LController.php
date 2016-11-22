@@ -11,7 +11,8 @@ namespace app\components;
 
 use app\consts\LogConst;
 use app\consts\MsgConst;
-use yii\base\Exception;
+use app\exception\RequestException;
+use app\consts\ErrorCode;
 use yii\web\Controller;
 use Yii;
 
@@ -108,6 +109,15 @@ class LController extends Controller
             return $default;
         }
         return $this->params[$field];
+    }
+
+    protected function checkEmpty($params)
+    {
+        foreach ($params as $require) {
+            if (empty($this->params[$require])) {
+                throw new RequestException($require . '不能为空', ErrorCode::INVALID_PARAM);
+            }
+        }
     }
 
 }

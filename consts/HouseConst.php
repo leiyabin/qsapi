@@ -51,10 +51,6 @@ class HouseConst
         self::FEATURE_4_CODE => '老城区房',
     ];
 
-    //房屋图片类别
-    const HOUSE_IMG_TYPE_NEW = 1;
-    const HOUSE_IMG_TYPE_OLD = 2;
-
     //售价区间
     const PRICE_INTERVAL_1 = 1;
     const PRICE_INTERVAL_2 = 2;
@@ -95,5 +91,15 @@ class HouseConst
         self::AREA_INTERVAL_8 => '200平以上'
     ];
 
+    //房屋类别
+    const HOUSE_TYPE_NEW = 1;
+    const HOUSE_TYPE_OLD = 2;
 
+    //装修情况
+    const DECORATION_FINE = 1;
+    const DECORATION_SIMPLE = 2;
+    public static $decoration = [
+        self::DECORATION_FINE   => '精装修',
+        self::DECORATION_SIMPLE => '简装修',
+    ];
 }
