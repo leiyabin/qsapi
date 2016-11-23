@@ -12,6 +12,7 @@ use app\components\LController;
 use app\consts\ErrorCode;
 use app\exception\RequestException;
 use app\manager\LoupanManager;
+use app\consts\HouseConst;
 
 class LoupanController extends LController
 {
@@ -25,8 +26,16 @@ class LoupanController extends LController
         if (!empty($this->params['name'])) {
             $condition['name'] = $this->params['name'];
         }
-        if (!empty($this->params['average_price'])) {
-            $condition['average_price'] = $this->params['average_price'];
+        if (!empty($this->params['average_price']) && is_array($this->params['average_price'])) {
+            $average_price = $this->params['average_price'];
+            $condition['average_price'] = ['or'];
+            foreach ($average_price as $value) {
+                if (!isset(HouseConst::$price_interval[$value])) {
+                    throw new RequestException('均价区间不对!', ErrorCode::INVALID_PARAM);
+                }
+                $condition[] = ['and', 'average_price >= ' . HouseConst::$price_interval[$value][0],
+                    'average_price <=' . HouseConst::$price_interval[$value][1]];
+            }
         }
         if (!empty($this->params['property_type_id'])) {
             $condition['property_type_id'] = $this->params['property_type_id'];

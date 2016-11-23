@@ -61,14 +61,14 @@ class HouseConst
     const PRICE_INTERVAL_7 = 7;
     const PRICE_INTERVAL_8 = 8;
     public static $price_interval = [
-        self::PRICE_INTERVAL_1 => '200万以下',
-        self::PRICE_INTERVAL_2 => '200万~300万',
-        self::PRICE_INTERVAL_3 => '300万~400万',
-        self::PRICE_INTERVAL_4 => '400万~500万',
-        self::PRICE_INTERVAL_5 => '500万~600万',
-        self::PRICE_INTERVAL_6 => '600万~700万',
-        self::PRICE_INTERVAL_7 => '700万~800万',
-        self::PRICE_INTERVAL_8 => '800万以上'
+        self::PRICE_INTERVAL_1 => [0, 200],
+        self::PRICE_INTERVAL_2 => [200, 300],
+        self::PRICE_INTERVAL_3 => [300, 400],
+        self::PRICE_INTERVAL_4 => [400, 500],
+        self::PRICE_INTERVAL_5 => [500, 600],
+        self::PRICE_INTERVAL_6 => [600, 700],
+        self::PRICE_INTERVAL_7 => [700, 800],
+        self::PRICE_INTERVAL_8 => [800, 10000],
     ];
 
     //面积区间
@@ -81,14 +81,14 @@ class HouseConst
     const AREA_INTERVAL_7 = 7;
     const AREA_INTERVAL_8 = 8;
     public static $area_interval = [
-        self::AREA_INTERVAL_1 => '50平以下',
-        self::AREA_INTERVAL_2 => '50平~70平',
-        self::AREA_INTERVAL_3 => '70平~90平',
-        self::AREA_INTERVAL_4 => '90平~110平',
-        self::AREA_INTERVAL_5 => '110平~130平',
-        self::AREA_INTERVAL_6 => '130平~150平',
-        self::AREA_INTERVAL_7 => '150平~200平',
-        self::AREA_INTERVAL_8 => '200平以上'
+        self::AREA_INTERVAL_1 => [0, 50],
+        self::AREA_INTERVAL_2 => [50, 70],
+        self::AREA_INTERVAL_3 => [70, 90],
+        self::AREA_INTERVAL_4 => [90, 110],
+        self::AREA_INTERVAL_5 => [110, 130],
+        self::AREA_INTERVAL_6 => [130, 150],
+        self::AREA_INTERVAL_7 => [150, 200],
+        self::AREA_INTERVAL_8 => [200, 1000],
     ];
 
     //房屋类别
