@@ -77,6 +77,7 @@ class ConfigController extends LController
         return $this->success($model);
     }
 
+
     public function actionValueadd()
     {
         if (empty($this->params['class_id'])) {

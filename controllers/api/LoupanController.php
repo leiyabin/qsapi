@@ -60,8 +60,8 @@ class LoupanController extends LController
     {
         $requires = [
             'name', 'average_price', 'address', 'sale_office_address', 'opening_time', 'area_id', 'property_type_id',
-            'sale_status', 'jiju', 'min_square', 'max_square', 'lan', 'lat', 'developers',
-            'property_company', 'img', 'banner_img', 'right_time', 'remark', 'tag', 'img_1', 'img_2', 'img_3', 'img_4'
+            'sale_status', 'jiju', 'min_square', 'max_square', 'lon', 'lat', 'developers',
+            'property_company', 'img', 'banner_img', 'right_time', 'tag', 'img_1', 'img_2', 'img_3', 'img_4'
         ];
         $this->checkEmpty($requires);
         if (!isset($this->params['img_5'])) {
@@ -75,8 +75,8 @@ class LoupanController extends LController
     {
         $requires = [
             'id', 'name', 'average_price', 'address', 'sale_office_address', 'opening_time', 'area_id', 'property_type_id',
-            'sale_status', 'jiju', 'min_square', 'max_square', 'lan', 'lat', 'developers',
-            'property_company', 'img', 'banner_img', 'right_time', 'remark', 'tag', 'img_1', 'img_2', 'img_3', 'img_4'
+            'sale_status', 'jiju', 'min_square', 'max_square', 'lon', 'lat', 'developers',
+            'property_company', 'img', 'banner_img', 'right_time', 'tag', 'img_1', 'img_2', 'img_3', 'img_4'
         ];
         $this->checkEmpty($requires);
         if (!isset($this->params['img_5'])) {
@@ -84,5 +84,14 @@ class LoupanController extends LController
         }
         LoupanManager::editLoupan($this->params);
         return $this->success();
+    }
+
+    public function actionGetsimple()
+    {
+        if (empty($this->params['id'])) {
+            throw new RequestException('id参数为空！', ErrorCode::INVALID_PARAM);
+        }
+        $model = LoupanManager::getLoupanSimple($this->params['id']);
+        return $this->success($model);
     }
 }

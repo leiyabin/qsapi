@@ -72,4 +72,14 @@ class AreaController extends LController
         AreaModel::model()->batchDel($ids);
         return $this->success();
     }
+
+    public function actionGetbyclassid()
+    {
+        if (empty($this->params['class_id'])) {
+            throw new RequestException('class_id参数为空！', ErrorCode::INVALID_PARAM);
+        }
+        $condition = ['class_id' => $this->params['class_id']];
+        $model = AreaModel::model()->getListByCondition($condition);
+        return $this->success($model);
+    }
 }

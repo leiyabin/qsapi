@@ -24,7 +24,7 @@ class LoupanManager
 {
     public static function getList($page_info, $list_name, $condition)
     {
-        $condition[] = ['is_deleted' => 0];
+        $condition['is_deleted'] = 0;
         $data = LouPanModel::model()->getList($page_info, $list_name, $condition);
         if (!empty($data[$list_name])) {
             foreach ($data[$list_name] as $key => $val) {
@@ -33,6 +33,7 @@ class LoupanManager
                 $data[$list_name][$key]['tag_map'] = self::buildTagMap($val['tag']);
             }
         }
+        //todo 获取area_name
         return $data;
     }
 
@@ -68,7 +69,7 @@ class LoupanManager
         self::checkLoupan($loupan);
         $loupan_filed = [
             'name', 'average_price', 'address', 'sale_office_address', 'opening_time', 'area_id',
-            'property_type_id', 'sale_status', 'jiju', 'min_square', 'max_square', 'lan', 'lat',
+            'property_type_id', 'sale_status', 'jiju', 'min_square', 'max_square', 'lon', 'lat',
             'developers', 'property_company', 'img', 'banner_img', 'right_time', 'remark', 'tag', 'is_deleted'
         ];
         $loupan_model = self::getFiled($loupan, $loupan_filed);
@@ -85,7 +86,7 @@ class LoupanManager
         self::checkLoupan($loupan);
         $loupan_filed = [
             'id', 'name', 'average_price', 'address', 'sale_office_address', 'opening_time', 'area_id',
-            'property_type_id', 'sale_status', 'jiju', 'min_square', 'max_square', 'lan', 'lat',
+            'property_type_id', 'sale_status', 'jiju', 'min_square', 'max_square', 'lon', 'lat',
             'developers', 'property_company', 'img', 'banner_img', 'right_time', 'remark', 'tag', 'is_deleted'
         ];
         $loupan_model = self::getFiled($loupan, $loupan_filed);
@@ -146,6 +147,11 @@ class LoupanManager
             }
         }
         return $res;
+    }
+
+    public static function getLoupanSimple($id)
+    {
+        return LouPanModel::model()->getById($id);
     }
 
     public static function getLoupan($id)
