@@ -118,6 +118,15 @@ class LController extends Controller
                 throw new RequestException($require . '不能为空', ErrorCode::INVALID_PARAM);
             }
         }
+
+    }
+    protected function checkIsset($params)
+    {
+        foreach ($params as $require) {
+            if (empty($this->params[$require])) {
+                throw new RequestException($require . '不能为空', ErrorCode::INVALID_PARAM);
+            }
+        }
     }
 
 }

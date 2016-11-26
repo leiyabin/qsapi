@@ -41,7 +41,7 @@ class Utils
     public static function buildIdArray(array $array)
     {
         $new_array = [];
-        foreach ($array as $value){
+        foreach ($array as $value) {
             $new_array[$value['id']] = $value;
         }
         return $new_array;

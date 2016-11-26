@@ -16,6 +16,14 @@ use app\consts\HouseConst;
 
 class LoupanController extends LController
 {
+    public function actionActive()
+    {
+        $requires = ['id', 'active'];
+        $this->checkIsset($requires);
+        LoupanManager::active($this->params['id'], $this->params['active']);
+        return $this->success();
+    }
+
     public function actionList()
     {
         $pageInfo = $this->pageInfo();

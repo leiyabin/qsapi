@@ -22,18 +22,39 @@ use Yii;
 
 class LoupanManager
 {
+
+    public static function active($id, $active)
+    {
+        if ($active) {
+            $attributes['is_deleted'] = 0;
+        } else {
+            $attributes['is_deleted'] = 1;
+        }
+        $condition = ['id' => $id];
+        LouPanModel::model()->updateByCondition($condition, $attributes);
+    }
+
     public static function getList($page_info, $list_name, $condition)
     {
         $condition['is_deleted'] = 0;
         $data = LouPanModel::model()->getList($page_info, $list_name, $condition);
         if (!empty($data[$list_name])) {
-            foreach ($data[$list_name] as $key => $val) {
-                $data[$list_name][$key]['sale_status_name'] = HouseConst::$sale_status[$val['sale_status']];
-                $data[$list_name][$key]['property_type'] = HouseConst::$property_type[$val['property_type_id']];
-                $data[$list_name][$key]['tag_map'] = self::buildTagMap($val['tag']);
+            $loupan_list = $data[$list_name];
+            $area_ids = array_column($loupan_list, 'area_id');
+            $areas = AreaModel::model()->getListByCondition(['id' => $area_ids]);
+            $areas = Utils::buildIdArray($areas);
+            foreach ($loupan_list as $key => $val) {
+                $loupan_list[$key]['sale_status_name'] = HouseConst::$sale_status[$val['sale_status']];
+                $loupan_list[$key]['property_type'] = HouseConst::$property_type[$val['property_type_id']];
+                $loupan_list[$key]['tag_map'] = self::buildTagMap($val['tag']);
+                if (!isset($areas[$val['area_id']])) {
+                    $error_msg = sprintf('楼盘片区id错误。loupan_id : %d ; area_id : %d .', $val['id'], $val['area_id']);
+                    throw new RequestException($error_msg, ErrorCode::SYSTEM_ERROR);
+                }
+                $loupan_list[$key]['area_name'] = $areas[$val['area_id']]['name'];
             }
+            $data[$list_name] = $loupan_list;
         }
-        //todo 获取area_name
         return $data;
     }
 
@@ -158,12 +179,14 @@ class LoupanManager
     {
         //楼盘详情页信息
         $loupan = LouPanModel::model()->getById($id);
-        $area = ValueModel::model()->getById($loupan['area_id']);
+        $area = AreaModel::model()->getById($loupan['area_id']);
         if (empty($area)) {
             $error_msg = sprintf('片区不存在： loupan_id: %d ,area_id: %d', $id, $loupan['area_id']);
             Yii::error($error_msg, LogConst::APPLICATION);
             throw new RequestException('片区不存在', ErrorCode::SYSTEM_ERROR);
         }
+        $loupan['quxian_id'] = $area['class_id'];
+        $loupan['area_name'] = $area['name'];
         $loupan['sale_status_name'] = HouseConst::$sale_status[$loupan['sale_status']];
         $loupan['property_type'] = HouseConst::$property_type[$loupan['property_type_id']];
         $loupan['tag_map'] = self::buildTagMap($loupan['tag']);
