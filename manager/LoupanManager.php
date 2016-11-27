@@ -132,12 +132,14 @@ class LoupanManager
 
     private static function checkDoorModel($door_model)
     {
-        $loupan_id = $door_model['loupan_id'];
-        $loupan = LouPanModel::model()->getById($loupan_id);
-        if (empty($loupan)) {
-            throw new RequestException('楼盘不存在！', ErrorCode::ACTION_ERROR);
+        if(isset($door_model['loupan_id'])){
+            $loupan_id = $door_model['loupan_id'];
+            $loupan = LouPanModel::model()->getById($loupan_id);
+            if (empty($loupan)) {
+                throw new RequestException('楼盘不存在！', ErrorCode::ACTION_ERROR);
+            }
         }
-        if (!in_array($door_model['decoration'], HouseConst::$decoration)) {
+        if (!isset(HouseConst::$decoration[$door_model['decoration']])) {
             throw new RequestException('装修情况不存在！', ErrorCode::ACTION_ERROR);
         }
     }

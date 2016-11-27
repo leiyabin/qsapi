@@ -47,7 +47,7 @@ class DoormodelController extends LController
     public function actionEdit()
     {
         $requires = [
-            'id', 'loupan_id', 'face', 'shitinwei', 'build_area', 'decoration',
+            'id', 'face', 'shitinwei', 'build_area', 'decoration',
             'img', 'description', 'tag_1', 'tag_2', 'tag_3'
         ];
         $this->checkEmpty($requires);

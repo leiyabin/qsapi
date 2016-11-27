@@ -90,7 +90,7 @@ class LController extends Controller
         $res = [
             'ret'  => 0,
             'data' => [
-                'code' => $error_code,
+                'error_code' => $error_code,
                 'msg'  => $error_msg
             ]
         ];

@@ -29,7 +29,7 @@ class DoorModel extends LModel
     {
         return [
             [['loupan_id', 'face', 'shitinwei', 'build_area', 'decoration', 'img', 'description', 'tag_1', 'tag_2', 'tag_3'], 'trim'],
-            [['loupan_id', 'face', 'shitinwei', 'build_area', 'decoration', 'img', 'description', 'tag_1', 'tag_2', 'tag_3'], 'required'],
+            [['loupan_id', 'face', 'shitinwei', 'build_area', 'decoration', 'img', 'tag_1', 'tag_2', 'tag_3'], 'required'],
             [['loupan_id', 'build_area', 'decoration'], 'integer'],
             [['face', 'shitinwei', 'tag_1', 'tag_2', 'tag_3'], 'string', 'max' => 10],
             [['img', 'description'], 'string', 'max' => 50],
