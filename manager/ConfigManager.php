@@ -20,13 +20,17 @@ class ConfigManager
 {
     public static function addValue($config)
     {
-        $id = $config['class_id'];
-        $class = ClassModel::model()->getById($id);
+        $class_id = $config['class_id'];
+        $class = ClassModel::model()->getById($class_id);
         if (empty($class)) {
             throw new RequestException('分类不存在！', ErrorCode::ACTION_ERROR);
-        } else {
-            ValueModel::model()->add($config);
         }
+        $condition = ['class_id' => $class_id, 'value' => $config['value']];
+        $config = ValueModel::model()->getOneByCondition($condition);
+        if (!empty($config)) {
+            throw new RequestException('添加的数据已存在！', ErrorCode::ACTION_ERROR);
+        }
+        ValueModel::model()->add($config);
     }
 
     public static function getValueList($page_info, $list_name, $condition = [])

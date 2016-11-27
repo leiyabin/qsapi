@@ -9,8 +9,10 @@
 namespace app\manager;
 
 use app\components\Utils;
+use app\consts\ConfigConst;
 use app\consts\ErrorCode;
 use app\consts\LogConst;
+use app\consts\UtilsConst;
 use app\exception\RequestException;
 use app\models\ValueModel;
 use app\models\AreaModel;
@@ -49,4 +51,19 @@ class AreaManager
         }
         return $data;
     }
+
+    public static function getAllArea()
+    {
+        $condition = ['class_id' => ConfigConst::AREA_CLASS_CONST];
+        $quxian_list = ValueModel::model()->getListByCondition($condition, ['id', 'value']);
+        $quxian_list = Utils::buildIdArray($quxian_list);
+        $quxian_ids = array_keys($quxian_list);
+        $condition = ['class_id' => $quxian_ids];
+        $area_list = AreaModel::model()->getListByCondition($condition, ['id', 'name', 'class_id']);
+        foreach ($area_list as $key => $value) {
+            $area_list[$key]['class_name'] = $quxian_list[$value['class_id']]['value'];
+        }
+        return $area_list;
+    }
+
 }

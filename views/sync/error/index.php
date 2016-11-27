@@ -1,7 +1,10 @@
-<?php
-/**
- * Created by PhpStorm.
- * User: lyb
- * Date: 2016/11/27
- * Time: 22:38
- */
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>error</title>
+</head>
+<body>
+<?= $error_msg ?>
+</body>
+</html>

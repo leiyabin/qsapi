@@ -49,4 +49,9 @@ class BrokerManager
         }
         return $data;
     }
+
+    public static function getListByCondition($condition, $select = ['*'])
+    {
+        return BrokerModel::model()->getListByCondition($condition, $select);
+    }
 }

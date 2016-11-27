@@ -86,12 +86,16 @@ class LController extends Controller
 
     private function renderError($error_code, $error_msg)
     {
+        $controller_name = end(explode('/', $this->id));
+        if ($controller_name == 'house') {
+            $this->redirect('/sync/error/show/?error_msg=' . $error_msg)->send();
+        }
         header("Content-type:application/json;charset=utf-8");
         $res = [
             'ret'  => 0,
             'data' => [
                 'error_code' => $error_code,
-                'msg'  => $error_msg
+                'msg'        => $error_msg
             ]
         ];
         $res_json = json_encode($res, JSON_UNESCAPED_UNICODE);
@@ -120,6 +124,7 @@ class LController extends Controller
         }
 
     }
+
     protected function checkIsset($params)
     {
         foreach ($params as $require) {

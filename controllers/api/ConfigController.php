@@ -80,9 +80,8 @@ class ConfigController extends LController
 
     public function actionValueadd()
     {
-        if (empty($this->params['class_id'])) {
-            throw new RequestException('class_id不能为空', ErrorCode::INVALID_PARAM);
-        }
+        $requires = ['class_id', 'value'];
+        $this->checkEmpty($requires);
         ConfigManager::addValue($this->params);
         return $this->success();
     }
