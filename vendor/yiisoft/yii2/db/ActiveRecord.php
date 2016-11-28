@@ -422,7 +422,9 @@ class ActiveRecord extends BaseActiveRecord
             Yii::info('Model not inserted due to validation error.', __METHOD__);
             return false;
         }
-
+        $timestamp = time();
+        $this->setAttribute('u_t', $timestamp);
+        $this->setAttribute('c_t', $timestamp);
         if (!$this->isTransactional(self::OP_INSERT)) {
             return $this->insertInternal($attributes);
         }

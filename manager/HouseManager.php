@@ -51,13 +51,21 @@ class HouseManager
     public static function addHouse($house, $house_img)
     {
         HouseModel::model()->add($house);
-        HouseImgModel::model()->add($house_img);
+        HouseImgModel::model()->addBySQL($house_img);
     }
 
     public static function editHouse($house, $house_img)
     {
         HouseModel::model()->updateById($house);
         $condition = ['object_id' => $house['id'], 'type' => HouseConst::HOUSE_TYPE_OLD];
-        HouseImgModel::model()->updateByCondition($condition, $house_img);
+        if(isset($house_img['object_id'])){
+            unset($house_img['object_id']);
+        }
+        if(isset($house_img['type'])){
+            unset($house_img['type']);
+        }
+        $house_img_id = HouseImgModel::model()->getOneByCondition($condition,['id']);
+        $house_img['id'] = $house_img_id;
+        HouseImgModel::model()->updateById($house_img);
     }
 }

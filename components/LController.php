@@ -88,7 +88,7 @@ class LController extends Controller
     {
         $controller_name = end(explode('/', $this->id));
         if ($controller_name == 'house') {
-            $this->redirect('/sync/error/show/?error_msg=' . $error_msg)->send();
+            $this->redirect(['/sync/error/show', 'error_msg' => $error_msg])->send();
         }
         header("Content-type:application/json;charset=utf-8");
         $res = [
@@ -99,7 +99,7 @@ class LController extends Controller
             ]
         ];
         $res_json = json_encode($res, JSON_UNESCAPED_UNICODE);
-        $response = sprintf('【RESPONSE】 method: %s url: %s ; params: %s ; result: %s ',
+        $response = sprintf('【RESPONSE】 method: %s url: %s; params: %s; result: %s ',
             Yii::$app->request->getMethod(), Yii::$app->request->getUrl(),
             json_encode($this->params, JSON_UNESCAPED_UNICODE), $res_json);
         Yii::error($response, LogConst::RESPONSE);

@@ -30,8 +30,8 @@ class LoupanManager
         } else {
             $attributes['is_deleted'] = 1;
         }
-        $condition = ['id' => $id];
-        LouPanModel::model()->updateByCondition($condition, $attributes);
+        $attributes['id'] = $id;
+        LouPanModel::model()->updateById($attributes);
     }
 
     public static function getList($page_info, $list_name, $condition)
@@ -115,7 +115,9 @@ class LoupanManager
         $house_img_field = ['img_1', 'img_2', 'img_3', 'img_4', 'img_5'];
         $house_img_model = self::getFiled($loupan, $house_img_field);
         $condition = ['object_id' => $loupan['id'], 'type' => HouseConst::HOUSE_TYPE_NEW];
-        HouseImgModel::model()->updateByCondition($condition, $house_img_model);
+        $house_img_id = HouseImgModel::model()->getOneByCondition($condition, ['id']);
+        $house_img_model['id'] = $house_img_id;
+        HouseImgModel::model()->updateById($house_img_model);
     }
 
     public static function addDoorModel($door_model)
@@ -132,7 +134,7 @@ class LoupanManager
 
     private static function checkDoorModel($door_model)
     {
-        if(isset($door_model['loupan_id'])){
+        if (isset($door_model['loupan_id'])) {
             $loupan_id = $door_model['loupan_id'];
             $loupan = LouPanModel::model()->getById($loupan_id);
             if (empty($loupan)) {

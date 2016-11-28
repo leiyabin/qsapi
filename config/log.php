@@ -11,7 +11,7 @@ return [
         [
             'class'      => 'yii\log\FileTarget',
             'levels'     => ['error', 'info'],
-            'categories' => ['application', 'request', 'response', 'rpc'],
+            'categories' => ['application', 'request', 'response', 'rpc', 'db'],
             'logFile'    => '@app/runtime/logs/app.all.log',
         ],
         [
@@ -61,6 +61,12 @@ return [
             'levels'     => ['error'],
             'categories' => ['application'],
             'logFile'    => '@app/runtime/logs/app.error.log'
+        ],
+        [
+            'class'      => 'yii\log\FileTarget',
+            'levels'     => ['info'],
+            'categories' => ['db'],
+            'logFile'    => '@app/runtime/logs/app.db.error.log'
         ]
     ],
 ];

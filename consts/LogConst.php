@@ -13,5 +13,5 @@ class LogConst
     const REQUEST = 'request';
     const RESPONSE = 'response';
     const RPC = 'rpc';
-
+    const DB = 'db';
 }

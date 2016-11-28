@@ -20,15 +20,19 @@ use Yii;
 
 class AreaManager
 {
-    public static function add($config)
+    public static function add($area)
     {
-        $id = $config['class_id'];
+        $id = $area['class_id'];
         $class = ValueModel::model()->getById($id);
         if (empty($class)) {
             throw new RequestException('分类不存在！', ErrorCode::ACTION_ERROR);
-        } else {
-            AreaModel::model()->add($config);
         }
+        $condition = ['class_id' => $id, 'name' => $area['name']];
+        $res = AreaModel::model()->getOneByCondition($condition);
+        if (!empty($res)) {
+            throw new RequestException('添加的数据已存在！', ErrorCode::ACTION_ERROR);
+        }
+        AreaModel::model()->add($area);
     }
 
     public static function getList($page_info, $list_name, $condition = [])

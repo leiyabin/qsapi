@@ -18,7 +18,7 @@ class HouseModel extends LModel
     }
 
     /**
-     * @return LouPanModel
+     * @return HouseModel
      */
     public static function model()
     {
@@ -32,8 +32,8 @@ class HouseModel extends LModel
                 'jishi', 'jitin', 'jiwei', 'jichu', 'jiyangtai', 'decoration', 'right_type', 'buy_type', 'unit_price',
                 'total_price', 'face', 'build_area', 'use_area', 'house_facility', 'house_description', 'floor_unit', 'keywords'
             ], 'trim'],
-            [['property_company', 'property_type_id', 'area_id', 'decoration'], 'required'],
-            [['area_id', 'property_type_id', 'house_age', 'in_floor', 'total_floor', 'jishi', 'jitin', 'jiwei', 'jichu',
+            [['id', 'property_company', 'property_type_id', 'area_id', 'decoration'], 'required'],
+            [['id', 'area_id', 'property_type_id', 'house_age', 'in_floor', 'total_floor', 'jishi', 'jitin', 'jiwei', 'jichu',
                 'jiyangtai', 'decoration', 'right_type', 'buy_type', 'broker_id'], 'integer'],
             [['lon', 'lat', 'unit_price', 'total_price', 'build_area', 'use_area'], 'double'],
             [['face'], 'string', 'max' => 10],

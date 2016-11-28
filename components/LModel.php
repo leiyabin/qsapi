@@ -86,10 +86,11 @@ class LModel extends ActiveRecord
 
     public function add($model)
     {
+        $this->setOldAttributes(null);
         $this->attributes = $model;
         if ($this->validate()) {
             try {
-                $this->save();
+                $this->insert();
                 return $this->attributes['id'];
             } catch (\Exception $e) {
                 throw new RequestException($e->getMessage(), ErrorCode::SYSTEM_ERROR);
@@ -100,27 +101,30 @@ class LModel extends ActiveRecord
         }
     }
 
-//    public function batchAdd($model_list)
-//    {
-//        $model = new static();
-//        foreach ($model_list as $key => $value) {
-//            $model->isNewRecord = true;
-//            if ($model->validate()) {
-//                try {
-//                    $model->setAttributes($value);
-//                    $model->save() && $model->id = 0;
-//                } catch (\Exception $e) {
-//                    throw new RequestException($e->getMessage(), ErrorCode::SYSTEM_ERROR);
-//                }
-//            } else {
-//                $error_msg = implode('', $model->getFirstErrors());
-//                throw new RequestException($error_msg, ErrorCode::INVALID_PARAM);
-//            }
-//        }
-//    }
+    public function addBySQL(array $model)
+    {
+        $timestamp = time();
+        $model['c_t'] = $model['u_t'] = $timestamp;
+        $fields = array_keys($model);
+        $sql = sprintf(' INSERT INTO %s ', $this->tableName() . '(`' . join('`, `', $fields) . '`) VALUES');
+        $val = [];
+        foreach ($fields as $v) {
+            $val[] = ':' . $v;
+        }
+        $value_sql = '(' . join(',', $val) . ')';
+        $sql .= $value_sql;
+        $command = static::getDb()->createCommand($sql);
+        foreach ($fields as $v) {
+            $bind_name = ':' . $v;
+            $command->bindValue($bind_name, null === $model[$v] ? '' : $model[$v]);
+        }
+        $result = $command->query();
+        return $result->count();
+    }
 
     public function updateByCondition($condition, $attributes)
     {
+        $attributes = array_merge($attributes, ['c_t' => time(), 'u_t' => time()]);
         $class = get_called_class();
         return $class::updateAllCounters($attributes, $condition);
     }

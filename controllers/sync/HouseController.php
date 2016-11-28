@@ -12,7 +12,8 @@ use app\components\LController;
 use app\consts\ConfigConst;
 use app\consts\ErrorCode;
 use app\consts\HouseConst;
-use app\consts\UtilsConst;
+use app\consts\LogConst;
+use Yii;
 use app\exception\RequestException;
 use app\manager\AreaManager;
 use app\manager\BrokerManager;
@@ -49,7 +50,7 @@ class HouseController extends LController
             $pianqu = $params['API_pq' . $i];
             $area_id = $this->getAreaIdByAreaAndQuxian($area_list, $pianqu, $quxian);
             if ($area_id == 0) {
-                $error_msg = sprintf('请先设置区县和片区！区县：%s,片区：%s', $quxian, $pianqu);
+                $error_msg = sprintf('请先设置区县和片区！【区县】：%s | 【片区】：%s', $quxian, $pianqu);
                 throw new RequestException($error_msg, ErrorCode::ACTION_ERROR);
             }
             $house['area_id'] = $area_id;
@@ -58,7 +59,7 @@ class HouseController extends LController
             //property_type_id
             $house['property_type_id'] = $this->getConfigKeyByValue(HouseConst::$property_type, $params['API_yt' . $i],
                 HouseConst::PROPERTY_TYPE_OTHER);
-            $house['house_age'] = $params['API_fl' . $i];
+            $house['house_age'] = $this->getRequestParam('API_fl' . $i, 0);
             $house['in_floor'] = $params['API_szlc' . $i];
             $house['total_floor'] = $params['API_zlc' . $i];
             $house['jishi'] = $params['API_js' . $i];
@@ -87,7 +88,7 @@ class HouseController extends LController
             $house_img['object_id'] = $house['id'];
             $house_img['type'] = HouseConst::HOUSE_TYPE_OLD;
             $house['house_img'] = $imgs['img'];
-            $this->opDb($house['id'], $house, $house_img);
+            $this->opDb($house, $house_img);
         }
     }
 
@@ -130,7 +131,7 @@ class HouseController extends LController
         $img_list_str = $params['API_piclist' . $index];
         $img_type_str = $params['API_pictype' . $index];
         $img_list_arr = explode(',', $img_list_str);
-        $img_type_arr = explode(',', $img_type_str);
+        $img_type_arr = explode('|', $img_type_str);
         $img = '';
         $house_img_list = [];
         $type_str_1 = '客厅';
@@ -147,14 +148,18 @@ class HouseController extends LController
         }
         for ($i = 0; $i < $img_list_arr_count; $i++) {
             $house_img_list['img_' . ($i + 1)] = $img_list_arr[$i];
+            if ($i == 4) {
+                break;
+            }
         }
         return ['img' => $img, 'house_img_list' => $house_img_list];
     }
 
-    private function opDb($id, $house, $house_img)
+    private function opDb($house, $house_img)
     {
+        $id = $house['id'];
         $select_house = HouseManager::getHouse($id);
-        if (!$select_house) {
+        if (empty($select_house)) {
             HouseManager::addHouse($house, $house_img);
         } else {
             HouseManager::editHouse($house, $house_img);
