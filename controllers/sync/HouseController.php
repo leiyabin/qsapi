@@ -90,6 +90,7 @@ class HouseController extends LController
             $house['house_img'] = $imgs['img'];
             $this->opDb($house, $house_img);
         }
+        $this->redirect('/sync/success/show');
     }
 
     private function getBrokerList()

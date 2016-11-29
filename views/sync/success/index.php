@@ -2,9 +2,9 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>error</title>
+    <title>success</title>
 </head>
 <body>
-<?= $error_msg ?>
+同步成功
 </body>
 </html>

@@ -8,8 +8,13 @@
 
 namespace app\controllers\sync;
 
+use \app\components\LController;
 
-class SuccessController
+class SuccessController extends LController
 {
-
+    public $layout = false;
+    public function actionShow()
+    {
+        return $this->render('index');
+    }
 }
