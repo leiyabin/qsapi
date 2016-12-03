@@ -17,6 +17,9 @@ use app\models\NewsModel;
 
 class NewsController extends LController
 {
+    const NEWS_TAG_HOT = 1;
+    const NEWS_TAG_RECOMMEND = 2;
+
     public function actionList()
     {
         $pageInfo = $this->pageInfo();
@@ -26,6 +29,14 @@ class NewsController extends LController
         }
         if (!empty($this->params['title'])) {
             $condition['title'] = $this->params['title'];
+        }
+        if (!empty($this->params['tag'])) {
+            if ($this->params['tag'] == self::NEWS_TAG_HOT) {
+                $condition['hot'] = 1;
+            }
+            if ($this->params['tag'] == self::NEWS_TAG_RECOMMEND) {
+                $condition['recommend'] = 1;
+            }
         }
         $data = NewsManager::getNewsList($pageInfo, 'news_list', $condition);
         return $this->renderPage($data, $pageInfo);

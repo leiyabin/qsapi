@@ -28,7 +28,7 @@ class NewsModel extends LModel
     public function rules()
     {
         return [
-            [['class_id', 'title', 'summary', 'content'], 'trim'],
+            [['class_id', 'title', 'summary', 'content', 'hot', 'recommend'], 'trim'],
             [['class_id', 'title', 'summary', 'content'], 'required'],
             ['title', 'string', 'max' => 50],
             ['summary', 'string', 'max' => 160],
