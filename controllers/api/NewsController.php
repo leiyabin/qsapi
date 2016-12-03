@@ -37,7 +37,7 @@ class NewsController extends LController
             throw new RequestException('id参数为空！', ErrorCode::INVALID_PARAM);
         }
         $id = $this->params['id'];
-        $model = NewsModel::model()->getById($id);
+        $model = NewsManager::get($id);
         return $this->success($model);
     }
 

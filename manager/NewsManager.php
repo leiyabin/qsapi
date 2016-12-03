@@ -51,4 +51,19 @@ class NewsManager
         }
         return $data;
     }
+
+    public static function get($id)
+    {
+        $model = NewsModel::model()->getById($id);
+        if (!empty($model)) {
+            $class_id = $model['class_id'];
+            $class = ValueModel::model()->getById($class_id);
+            if (empty($class)) {
+                $msg = sprintf('未找到百科类别。class_id=,id=', $class_id, $id);
+                throw new RequestException($msg, ErrorCode::SYSTEM_ERROR);
+            }
+            $model['class_name'] = $class['value'];
+        }
+        return $model;
+    }
 }

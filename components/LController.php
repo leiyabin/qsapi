@@ -86,7 +86,8 @@ class LController extends Controller
 
     private function renderError($error_code, $error_msg)
     {
-        $controller_name = end(explode('/', $this->id));
+        $arr = explode('/', $this->id);
+        $controller_name = end($arr);
         if ($controller_name == 'house') {
             $this->redirect(['/sync/error/show', 'error_msg' => $error_msg])->send();
         }
