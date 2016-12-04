@@ -34,10 +34,10 @@ class LoupanManager
         LouPanModel::model()->updateById($attributes);
     }
 
-    public static function getList($page_info, $list_name, $condition)
+    public static function getList($page_info, $list_name, $condition, $select = ['*'], $add_condition = [])
     {
         $condition['is_deleted'] = 0;
-        $data = LouPanModel::model()->getList($page_info, $list_name, $condition);
+        $data = LouPanModel::model()->getList($page_info, $list_name, $condition, $select, $add_condition);
         if (!empty($data[$list_name])) {
             $loupan_list = $data[$list_name];
             $area_ids = array_column($loupan_list, 'area_id');
@@ -90,7 +90,7 @@ class LoupanManager
         self::checkLoupan($loupan);
         $loupan_filed = [
             'name', 'average_price', 'address', 'sale_office_address', 'opening_time', 'area_id',
-            'property_type_id', 'sale_status', 'jiju', 'min_square', 'max_square', 'lon', 'lat',
+            'property_type_id', 'sale_status', 'jiju', 'min_square', 'max_square', 'lon', 'lat','recommend',
             'developers', 'property_company', 'img', 'banner_img', 'right_time', 'remark', 'tag', 'is_deleted'
         ];
         $loupan_model = self::getFiled($loupan, $loupan_filed);
@@ -107,7 +107,7 @@ class LoupanManager
         self::checkLoupan($loupan);
         $loupan_filed = [
             'id', 'name', 'average_price', 'address', 'sale_office_address', 'opening_time', 'area_id',
-            'property_type_id', 'sale_status', 'jiju', 'min_square', 'max_square', 'lon', 'lat',
+            'property_type_id', 'sale_status', 'jiju', 'min_square', 'max_square', 'lon', 'lat','recommend',
             'developers', 'property_company', 'img', 'banner_img', 'right_time', 'remark', 'tag', 'is_deleted'
         ];
         $loupan_model = self::getFiled($loupan, $loupan_filed);

@@ -34,16 +34,18 @@ class LoupanController extends LController
         if (!empty($this->params['name'])) {
             $condition['name'] = $this->params['name'];
         }
+        $add_condition = '';
         if (!empty($this->params['average_price']) && is_array($this->params['average_price'])) {
             $average_price = $this->params['average_price'];
-            $condition['average_price'] = ['or'];
+            $condition_str_arr = [];
             foreach ($average_price as $value) {
                 if (!isset(HouseConst::$price_interval[$value])) {
                     throw new RequestException('均价区间不对!', ErrorCode::INVALID_PARAM);
                 }
-                $condition[] = ['and', 'average_price >= ' . HouseConst::$price_interval[$value][0],
-                    'average_price <=' . HouseConst::$price_interval[$value][1]];
+                $condition_str_arr[] = sprintf(' (`average_price` >= %d and `average_price` <= %d ) ', HouseConst::$price_interval[$value][0],
+                    HouseConst::$price_interval[$value][1]);
             }
+            $add_condition = implode('or', $condition_str_arr);
         }
         if (!empty($this->params['property_type_id'])) {
             $condition['property_type_id'] = $this->params['property_type_id'];
@@ -51,7 +53,10 @@ class LoupanController extends LController
         if (!empty($this->params['sale_status'])) {
             $condition['sale_status'] = $this->params['sale_status'];
         }
-        $data = LoupanManager::getList($pageInfo, 'loupan_list', $condition);
+        if (!empty($this->params['recommend'])) {
+            $condition['recommend'] = $this->params['recommend'];
+        }
+        $data = LoupanManager::getList($pageInfo, 'loupan_list', $condition, [], $add_condition);
         return $this->renderPage($data, $pageInfo);
     }
 
@@ -72,9 +77,8 @@ class LoupanController extends LController
             'property_company', 'img', 'banner_img', 'right_time', 'tag', 'img_1', 'img_2', 'img_3', 'img_4'
         ];
         $this->checkEmpty($requires);
-        if (!isset($this->params['img_5'])) {
-            $this->params['img_5'] = '';
-        }
+        $this->params['img_5'] = $this->getRequestParam('img_5', '');
+        $this->params['recommend'] = $this->getRequestParam('recommend', 0);
         LoupanManager::addLoupan($this->params);
         return $this->success();
     }
@@ -87,9 +91,8 @@ class LoupanController extends LController
             'property_company', 'img', 'banner_img', 'right_time', 'tag', 'img_1', 'img_2', 'img_3', 'img_4'
         ];
         $this->checkEmpty($requires);
-        if (!isset($this->params['img_5'])) {
-            $this->params['img_5'] = '';
-        }
+        $this->params['img_5'] = $this->getRequestParam('img_5', '');
+        $this->params['recommend'] = $this->getRequestParam('recommend', 0);
         LoupanManager::editLoupan($this->params);
         return $this->success();
     }

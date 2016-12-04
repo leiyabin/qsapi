@@ -64,13 +64,14 @@ class LModel extends ActiveRecord
         return $model;
     }
 
-    public function getList($page_info, $list_name, $condition = [], $select = ['*'])
+    public function getList($page_info, $list_name, $condition = [], $select = ['*'], $add_condition = [])
     {
         $limit = $page_info['limit'];
         $offset = $page_info['offset'];
         $list = $this->find()
             ->addSelect($select)
             ->where($condition)
+            ->andWhere($add_condition)
             ->limit($limit)
             ->offset($offset)
             ->addOrderBy(['id' => SORT_DESC])
@@ -79,6 +80,7 @@ class LModel extends ActiveRecord
         $total = $this->find()
             ->addSelect(['id'])
             ->where($condition)
+            ->andWhere($add_condition)
             ->count('id');
         $res = [$list_name => $list, 'total' => $total];
         return $res;
