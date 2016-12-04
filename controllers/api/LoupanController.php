@@ -34,7 +34,7 @@ class LoupanController extends LController
         if (!empty($this->params['name'])) {
             $condition['name'] = $this->params['name'];
         }
-        $add_condition = '';
+        $add_condition = [];
         if (!empty($this->params['average_price']) && is_array($this->params['average_price'])) {
             $average_price = $this->params['average_price'];
             $condition_str_arr = [];

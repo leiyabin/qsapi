@@ -64,23 +64,26 @@ class LModel extends ActiveRecord
         return $model;
     }
 
-    public function getList($page_info, $list_name, $condition = [], $select = ['*'], $add_condition = [])
+    public function getList($page_info, $list_name, $condition = [], $select = ['*'],
+                            $add_condition_1 = [], $add_condition_2 = [], $order_by = '')
     {
         $limit = $page_info['limit'];
         $offset = $page_info['offset'];
         $list = $this->find()
             ->addSelect($select)
             ->where($condition)
-            ->andWhere($add_condition)
+            ->andWhere($add_condition_1)
+            ->andWhere($add_condition_2)
             ->limit($limit)
             ->offset($offset)
-            ->addOrderBy(['id' => SORT_DESC])
+            ->addOrderBy(empty($order_by) ? ['id' => SORT_DESC] : [$order_by => SORT_DESC])
             ->asArray()
             ->all();
         $total = $this->find()
             ->addSelect(['id'])
             ->where($condition)
-            ->andWhere($add_condition)
+            ->andWhere($add_condition_1)
+            ->andWhere($add_condition_2)
             ->count('id');
         $res = [$list_name => $list, 'total' => $total];
         return $res;

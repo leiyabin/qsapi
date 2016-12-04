@@ -117,7 +117,7 @@ class HouseConst
     public static $buy_type = [
         self::BUY_TYPE_ALL            => '全款',
         self::BUY_TYPE_BUSSINESS_LOAN => '商贷',
-        self::BUY_TYPE_BUSSINESS_LOAN => '公积金',
+        self::BUY_TYPE_FUND_LOAN => '公积金',
     ];
 
     //默认经纪人

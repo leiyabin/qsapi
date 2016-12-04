@@ -9,11 +9,8 @@
 namespace app\controllers\sync;
 
 use app\components\LController;
-use app\consts\ConfigConst;
 use app\consts\ErrorCode;
 use app\consts\HouseConst;
-use app\consts\LogConst;
-use Yii;
 use app\exception\RequestException;
 use app\manager\AreaManager;
 use app\manager\BrokerManager;
