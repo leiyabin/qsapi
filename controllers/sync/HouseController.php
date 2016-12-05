@@ -24,7 +24,6 @@ class HouseController extends LController
         $size = $params['API_pagesize'];
         $broker_list = $this->getBrokerList();
         $area_list = AreaManager::getAllArea();
-        //todo 校验全部的参数
         for ($i = 1; $i <= $size; $i++) {
             if (!$params["API_check" . $i]) {
                 continue;

@@ -13,6 +13,7 @@ use app\consts\LogConst;
 use app\consts\MsgConst;
 use app\exception\RequestException;
 use app\consts\ErrorCode;
+use yii\base\Exception;
 use yii\web\Controller;
 use Yii;
 
@@ -80,17 +81,32 @@ class LController extends Controller
         } catch (\Exception $e) {
             $error_string = sprintf('【error】 MSG:%s ;TRACE:%s ', $e->getMessage(), $e->getTraceAsString());
             Yii::error($error_string);
-            $this->renderError($e->getCode(), $e->getMessage());
+            $this->outPutError($e);
         }
     }
 
-    private function renderError($error_code, $error_msg)
+    private function outPutError(\Exception $e)
     {
-        $arr = explode('/', $this->id);
-        $controller_name = end($arr);
-        if ($controller_name == 'house') {
-            $this->redirect(['/sync/error/show', 'error_msg' => $error_msg])->send();
+        if ($this->id == 'sync/house') {
+            $this->renderViewError($e);
         }
+        $error_code = $e->getCode();
+        $error_msg = $e->getMessage();
+        $this->renderJsonError($error_code, $error_msg);
+    }
+
+    private function renderViewError(\Exception $e)
+    {
+        $error_msg = '服务器错误！';
+        if ($e instanceof RequestException) {
+            $error_msg = $e->getMessage();
+        }
+        $this->redirect(['/sync/error/show', 'error_msg' => $error_msg])->send();
+
+    }
+
+    private function renderJsonError($error_code, $error_msg)
+    {
         header("Content-type:application/json;charset=utf-8");
         $res = [
             'ret'  => 0,

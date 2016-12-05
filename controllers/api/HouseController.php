@@ -13,10 +13,10 @@ use app\consts\ErrorCode;
 use app\consts\HouseConst;
 use app\exception\RequestException;
 use app\manager\HouseManager;
+use app\models\HouseModel;
 
 class HouseController extends LController
 {
-
     public function actionList()
     {
         $pageInfo = $this->pageInfo();
@@ -68,6 +68,15 @@ class HouseController extends LController
             throw new RequestException('id参数为空！', ErrorCode::INVALID_PARAM);
         }
         $model = HouseManager::getHouse($this->params['id']);
+        return $this->success($model);
+    }
+
+    public function actionGetrecommend()
+    {
+        $requires = ['size'];
+        $this->checkEmpty($requires);
+        $condition['recommend'] = 1;
+        $model = HouseModel::model()->getListByCondition($condition, 0, $this->params['size']);
         return $this->success($model);
     }
 }
