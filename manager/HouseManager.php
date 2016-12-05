@@ -27,23 +27,31 @@ class HouseManager
     {
         $house = HouseModel::model()->getById($id);
         if (!empty($house)) {
+            //area
             $area = AreaModel::model()->getById($house['area_id']);
             if (empty($area)) {
                 $error_msg = sprintf('片区不存在： house_id: %d ,area_id: %d', $id, $house['area_id']);
                 Yii::error($error_msg, LogConst::APPLICATION);
                 throw new RequestException($error_msg, ErrorCode::SYSTEM_ERROR);
             }
-            $quxian = ValueModel::model()->getById($area->class_id);
+            //quxian
+            $quxian = ValueModel::model()->getById($area['class_id']);
             if (empty($quxian)) {
                 $error_msg = sprintf('区县不存在： quxian_id: %d ,area_id: %d', $area->class_id, $house['area_id']);
                 Yii::error($error_msg, LogConst::APPLICATION);
                 throw new RequestException($error_msg, ErrorCode::SYSTEM_ERROR);
             }
+            //broker
+            $broker = BrokerModel::model()->getById($house['broker_id']);
+            $house['broker_name'] = empty($broker) ? HouseConst::DEFAULT_BROKER_NAME : $broker['name'];
+            $house['broker_img'] = empty($broker) ? "" : $broker['img'];
+            $house['broker_phone'] = empty($broker) ? HouseConst::DEFAULT_BROKER_PHONE : $broker['phone'];
             $house['quxian_id'] = $area['class_id'];
             $house['quxian_name'] = $quxian['value'];
             $house['area_name'] = $area['name'];
             $house['decoration_name'] = HouseConst::$decoration[$house['decoration']];
             $house['property_type'] = HouseConst::$property_type[$house['property_type_id']];
+            $house['right_type_name'] = HouseConst::$right_type[$house['right_type']];
             $house_imgs = self::getHouseImgs($id);
             $house = array_merge($house, $house_imgs);
         }
@@ -55,7 +63,7 @@ class HouseManager
     {
         $condition['is_deleted'] = 0;
         $data = HouseModel::model()->getList($page_info, $list_name, $condition, $select, $average_price_condition,
-            $build_area_condition, $order_by );
+            $build_area_condition, $order_by);
         if (!empty($data[$list_name])) {
             $house_list = $data[$list_name];
             $area_ids = array_column($house_list, 'area_id');

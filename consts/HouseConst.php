@@ -117,12 +117,13 @@ class HouseConst
     public static $buy_type = [
         self::BUY_TYPE_ALL            => '全款',
         self::BUY_TYPE_BUSSINESS_LOAN => '商贷',
-        self::BUY_TYPE_FUND_LOAN => '公积金',
+        self::BUY_TYPE_FUND_LOAN      => '公积金',
     ];
 
     //默认经纪人
     const DEFAULT_BROKER_ID = 10000000;
     const DEFAULT_BROKER_NAME = '李凯';
+    const DEFAULT_BROKER_PHONE = '010 - 53635990';
 
     //产权类型
     const RIGHT_TYPE_CONST_PRICE = 1;
