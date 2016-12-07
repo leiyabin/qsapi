@@ -14,16 +14,18 @@ use app\components\Utils;
 use app\consts\ErrorCode;
 use app\exception\RequestException;
 use yii\base\Exception;
+use app\consts\LogConst;
 
 include_once dirname(__FILE__) . '/../extend/phpQuery/phpQuery.php';
 
 class StatisticsModel extends LModel
 {
-    private $date_timestamp;
+
+    public $date_timestamp;
 
     public static function tableName()
     {
-        return '{{%statistics}}';
+        return '{{%quotation}}';
     }
 
     /**
@@ -40,29 +42,70 @@ class StatisticsModel extends LModel
         $this->date_timestamp = Utils::getDateTimestamp();
     }
 
-    public function get()
+    public function getResult()
     {
-        $select = [
-            'id', 'date', 'quanshijunjia', 'guapaijiunjia', 'zuorixinzeng', 'zuoridaikan', 'zuorichengjiao'
-        ];
-        $where = ['date' => $this->date_timestamp];
+        $yes_data = $this->getYesterdayData();
+        $today_data = $this->getTodayData();
+        $res = $today_data;
+        $yzcjl_difference = $today_data['yzcjl'] - $yes_data['yzcjl'];
+        $yzfydkl_difference = $today_data['yzfydkl'] - $yes_data['yzfydkl'];
+        if ($yzcjl_difference > 0) {
+            $res['yzcjl_change'] = 'up';
+        } elseif ($yzcjl_difference < 0) {
+            $res['yzcjl_change'] = 'down';
+        }
+        if ($yzfydkl_difference > 0) {
+            $res['yzfydkl_change'] = 'up';
+        } elseif ($yzfydkl_difference < 0) {
+            $res['yzfydkl_change'] = 'down';
+        }
+        return $res;
+    }
+
+    public function getYesterdayData()
+    {
+        $date_timestamp = $this->date_timestamp - 86400;
+        $data = $this->get($date_timestamp);
+        if (empty($data)) {
+            $data = [
+                'cjjj'      => 0,
+                'cjjj_name' => '上月成交均价',
+                'gpjj'      => 0,
+                'gpjj_name' => '上月份挂牌均价',
+                'yzcjl'     => 0,
+                'yzfydkl'   => 0,
+            ];
+        }
+        return $data;
+    }
+
+    public function getTodayData()
+    {
+        $data = $this->get($this->date_timestamp);
+        if (empty($data)) {
+            $data = $this->getFromHtml();
+        }
+        return $data;
+    }
+
+    public function get($data)
+    {
+        $select = ['id', 'date', 'cjjj', 'cjjj_name', 'gpjj', 'gpjj_name', 'yzcjl', 'yzfydkl'];
+        $where = ['date' => $data];
         $statistics = $this->find()
             ->addSelect($select)
             ->where($where)
             ->asArray()
             ->one();
-        if (empty($statistics)) {
-            $statistics = $this->getFromHtml();
-        }
         return $statistics;
     }
 
     public function rules()
     {
         return [
-            [['date', 'quanshijunjia', 'guapaijiunjia', 'zuorixinzeng', 'zuoridaikan', 'zuorichengjiao'], 'required'],
-            [['date', 'quanshijunjia', 'guapaijiunjia', 'zuoridaikan', 'zuorichengjiao'], 'integer'],
-            [['zuorixinzeng'], 'number'],
+            [['date', 'cjjj', 'cjjj_name', 'gpjj', 'gpjj_name', 'yzcjl', 'yzfydkl'], 'required'],
+            [['date', 'cjjj', 'gpjj', 'yzcjl', 'yzfydkl'], 'integer'],
+            [['cjjj_name', 'gpjj_name'], 'string', 'max' => 20],
         ];
     }
 
@@ -70,27 +113,33 @@ class StatisticsModel extends LModel
     {
         $statistics = [];
         try {
-            $pq = \phpQuery::newDocumentFile('http://bj.lianjia.com/');
-            $statistics['quanshijunjia'] = $pq->find('div.deal-price')->find('label.dataAuto')->text();
-            $statistics['guapaijiunjia'] = $pq->find('div.listing-price')->find('label.dataAuto')->text();
-            $statistics['quanshijunjia'] = str_replace(PHP_EOL, '', trim($statistics['quanshijunjia']));
-            $statistics['guapaijiunjia'] = str_replace(PHP_EOL, '', trim($statistics['guapaijiunjia']));
-            $data = $pq->find('div.main')->find('li')->find('label')->text();
-            $data = str_replace(PHP_EOL, ',', trim($data));
-            $arr = explode(',', $data);
-            $statistics['zuorixinzeng'] = $arr[0];
-            $statistics['zuorichengjiao'] = $arr[1];
-            $statistics['zuoridaikan'] = $arr[2];
+            $pq = \phpQuery::newDocumentFile('http://bj.5i5j.com/');
+            $lis = $pq->find('div.data_box')->find('ul.overflow')->find('li');
+            $result = [];
+            foreach ($lis as $li) {
+                $result[] = [
+                    'value' => pq($li)->find('span')->text(),
+                    'key'   => pq($li)->find('p.f16')->text(),
+                ];
+            }
+            $statistics['cjjj'] = $result[0]['value'];
+            $statistics['cjjj_name'] = $result[0]['key'];
+            $statistics['gpjj'] = $result[1]['value'];
+            $statistics['gpjj_name'] = $result[1]['key'];
+            $statistics['yzcjl'] = $result[2]['value'];
+            $statistics['yzfydkl'] = $result[3]['value'];
             $statistics['date'] = $this->date_timestamp;
             $this->set($statistics);
         } catch (\Exception $e) {
+            \Yii::error($e->getMessage(), LogConst::RPC);
             $statistics = [
-                'quanshijunjia'  => 0,
-                'guapaijiunjia'  => 0,
-                'zuorixinzeng'   => 0,
-                'zuorichengjiao' => 0,
-                'zuoridaikan'    => 0,
-                'date'           => $this->date_timestamp,
+                'cjjj'      => 0,
+                'cjjj_name' => '上月成交均价',
+                'gpjj'      => 0,
+                'gpjj_name' => '上月份挂牌均价',
+                'yzcjl'     => 0,
+                'yzfydkl'   => 0,
+                'date'      => $this->date_timestamp,
             ];
         }
         return $statistics;
