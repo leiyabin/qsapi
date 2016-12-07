@@ -26,8 +26,8 @@ class ConfigManager
             throw new RequestException('分类不存在！', ErrorCode::ACTION_ERROR);
         }
         $condition = ['class_id' => $class_id, 'value' => $config['value']];
-        $config = ValueModel::model()->getOneByCondition($condition);
-        if (!empty($config)) {
+        $select_list = ValueModel::model()->getOneByCondition($condition);
+        if (!empty($select_list)) {
             throw new RequestException('添加的数据已存在！', ErrorCode::ACTION_ERROR);
         }
         ValueModel::model()->add($config);
