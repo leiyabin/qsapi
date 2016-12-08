@@ -9,6 +9,7 @@
 namespace app\manager;
 
 use app\models\BrokerModel;
+use app\models\HouseAttachModel;
 use Yii;
 
 use app\models\HouseModel;
@@ -27,6 +28,8 @@ class HouseManager
     {
         $house = HouseModel::model()->getById($id);
         if (!empty($house)) {
+            //get house attach
+            $house_attach = self::getHouseAttach($id);
             //area
             $area = AreaModel::model()->getById($house['area_id']);
             if (empty($area)) {
@@ -52,10 +55,17 @@ class HouseManager
             $house['decoration_name'] = HouseConst::$decoration[$house['decoration']];
             $house['property_type'] = HouseConst::$property_type[$house['property_type_id']];
             $house['right_type_name'] = HouseConst::$right_type[$house['right_type']];
+            $house['buy_type_name'] = HouseConst::$buy_type[$house['buy_type']];
             $house_imgs = self::getHouseImgs($id);
+            $house['house_attach'] = $house_attach;
             $house = array_merge($house, $house_imgs);
         }
         return $house;
+    }
+
+    public static function getHouseAttach($id)
+    {
+        return HouseAttachModel::model()->getById($id);
     }
 
     public static function getList($page_info, $list_name, $condition, $select, $average_price_condition = [],
