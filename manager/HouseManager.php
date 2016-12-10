@@ -131,4 +131,52 @@ class HouseManager
         $house_img['id'] = $house_img_id;
         HouseImgModel::model()->updateById($house_img);
     }
+
+    public static function editHouseAttach($house)
+    {
+        self::checkHouse($house);
+        $house_attributes = [
+            'id'        => $house['id'],
+            'lon'       => $house['lon'],
+            'lat'       => $house['lat'],
+            'recommend' => $house['recommend'],
+        ];
+        HouseModel::model()->updateById($house_attributes);
+        $house_attach = HouseAttachModel::model()->getById($house['id']);
+        $house_attach_attributes = [
+            'id', 'build_type', 'total_door_model', 'total_building', 'build_year', 'community_average_price', 'traffic_info',
+            'school_info', 'door_model_introduction', 'community_introduction', 'community_img', 'community_name',
+            'lon', 'lat', 'right_info', 'mortgage_info', 'deed_year', 'last_sale_time', 'sale_time', 'is_only'
+        ];
+        $house_attach_model = self::getFiled($house, $house_attach_attributes);
+        if (empty($house_attach)) {
+            HouseAttachModel::model()->add($house_attach_model);
+        } else {
+            unset($house_attach_attributes['id']);
+            HouseAttachModel::model()->updateById($house_attach_model);
+        }
+    }
+
+    private static function getFiled($arr, $field_list)
+    {
+        $res = [];
+        foreach ($field_list as $value) {
+            if (isset($arr[$value])) {
+                $res[$value] = $arr[$value];
+            }
+        }
+        return $res;
+    }
+
+    private static function checkHouse($house)
+    {
+        $build_type = $house['build_type'];
+        $deed_year = $house['deed_year'];
+        if (!isset(HouseConst::$build_type[$build_type])) {
+            throw new RequestException('建筑类型不正确', ErrorCode::ACTION_ERROR);
+        }
+        if (!isset(HouseConst::$deed_year[$deed_year])) {
+            throw new RequestException('房本年限不正确', ErrorCode::ACTION_ERROR);
+        }
+    }
 }

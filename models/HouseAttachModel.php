@@ -32,7 +32,7 @@ class HouseAttachModel extends LModel
             [['id', 'sale_time', 'last_sale_time', 'deed_year', 'is_only', 'mortgage_info', 'right_info', 'community_name',
                 'community_img', 'community_introduction', 'door_model_introduction', 'school_info', 'traffic_info',
                 'community_average_price', 'build_year', 'total_building', 'total_door_model', 'build_type'], 'trim'],
-            [['sale_time', 'last_sale_time', 'deed_year', 'is_only', 'mortgage_info', 'right_info', 'community_name',
+            [['sale_time', 'last_sale_time', 'deed_year', 'mortgage_info', 'right_info', 'community_name',
                 'community_img', 'community_introduction', 'door_model_introduction', 'school_info', 'traffic_info',
                 'community_average_price', 'build_year', 'total_building', 'total_door_model', 'build_type'], 'required'],
             [['id', 'sale_time', 'last_sale_time', 'deed_year', 'is_only', 'community_average_price', 'build_year',

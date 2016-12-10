@@ -145,4 +145,25 @@ class HouseConst
         self::RIGHT_TYPE_ARMY_PROPERTY     => '军产',
     ];
 
+    //房本年限
+    const DEED_YEAR_1 = 1;
+    const DEED_YEAR_2 = 2;
+    const DEED_YEAR_3 = 3;
+
+    public static $deed_year = [
+        self::DEED_YEAR_1 => '不满两年',
+        self::DEED_YEAR_2 => '满两年',
+        self::DEED_YEAR_3 => '满五年',
+    ];
+
+    //建筑类型
+    const BUILD_TYPE_1 = 1;
+    const BUILD_TYPE_2 = 2;
+    const BUILD_TYPE_3 = 3;
+
+    public static $build_type = [
+        self::BUILD_TYPE_1 => '塔楼',
+        self::BUILD_TYPE_2 => '板楼',
+        self::BUILD_TYPE_3 => '塔板结合',
+    ];
 }

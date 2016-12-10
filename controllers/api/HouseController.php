@@ -71,6 +71,20 @@ class HouseController extends LController
         return $this->success($model);
     }
 
+    public function actionEdit()
+    {
+        $requires = [
+            'id', 'build_type', 'total_door_model', 'total_building', 'build_year', 'community_average_price', 'traffic_info',
+            'school_info', 'door_model_introduction', 'community_introduction', 'community_img', 'community_name',
+            'lon', 'lat', 'right_info', 'mortgage_info', 'deed_year', 'last_sale_time', 'sale_time',
+        ];
+        $this->checkEmpty($requires);
+        $this->params['recommend'] = $this->getRequestParam('recommend', 0);
+        $this->params['is_only'] = $this->getRequestParam('is_only', 0);
+        HouseManager::editHouseAttach($this->params);
+        return $this->success();
+    }
+
     public function actionGetrecommend()
     {
         $requires = ['size'];
