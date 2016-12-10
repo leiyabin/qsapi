@@ -29,7 +29,7 @@ class HouseModel extends LModel
     {
         return [
             [['area_id', 'property_company', 'address', 'property_type_id', 'house_age', 'in_floor', 'total_floor', 'broker_id',
-                'jishi', 'jitin', 'jiwei', 'jichu', 'jiyangtai', 'decoration', 'right_type', 'buy_type', 'unit_price',
+                'jishi', 'jitin', 'jiwei', 'jichu', 'jiyangtai', 'decoration', 'right_type', 'buy_type', 'unit_price', 'tag',
                 'total_price', 'face', 'build_area', 'use_area', 'house_facility', 'house_description', 'floor_unit', 'keywords'
             ], 'trim'],
             [['id', 'property_company', 'property_type_id', 'area_id', 'decoration'], 'required'],

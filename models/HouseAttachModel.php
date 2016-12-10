@@ -31,8 +31,8 @@ class HouseAttachModel extends LModel
         return [
             [['id', 'sale_time', 'last_sale_time', 'deed_year', 'is_only', 'mortgage_info', 'right_info', 'community_name',
                 'community_img', 'community_introduction', 'door_model_introduction', 'school_info', 'traffic_info',
-                'community_average_price', 'build_year', 'total_building', 'total_door_model', 'build_type'], 'trim'],
-            [['sale_time', 'last_sale_time', 'deed_year', 'mortgage_info', 'right_info', 'community_name',
+                'community_average_price', 'build_year', 'total_building', 'total_door_model', 'build_type', 'tax_explain'], 'trim'],
+            [['sale_time', 'last_sale_time', 'deed_year', 'mortgage_info', 'right_info', 'community_name', 'tax_explain',
                 'community_img', 'community_introduction', 'door_model_introduction', 'school_info', 'traffic_info',
                 'community_average_price', 'build_year', 'total_building', 'total_door_model', 'build_type'], 'required'],
             [['id', 'sale_time', 'last_sale_time', 'deed_year', 'is_only', 'community_average_price', 'build_year',
@@ -40,7 +40,7 @@ class HouseAttachModel extends LModel
             [['right_info'], 'string', 'max' => 10],
             [['mortgage_info', 'community_name'], 'string', 'max' => 20],
             [['community_img'], 'string', 'max' => 100],
-            [['community_introduction', 'door_model_introduction', 'school_info', 'traffic_info'], 'string', 'max' => 255],
+            [['community_introduction', 'door_model_introduction', 'school_info', 'traffic_info', 'tax_explain'], 'string', 'max' => 255],
         ];
     }
 

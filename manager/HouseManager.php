@@ -139,6 +139,7 @@ class HouseManager
             'id'        => $house['id'],
             'lon'       => $house['lon'],
             'lat'       => $house['lat'],
+            'tag'       => $house['tag'],
             'recommend' => $house['recommend'],
         ];
         HouseModel::model()->updateById($house_attributes);
@@ -146,7 +147,7 @@ class HouseManager
         $house_attach_attributes = [
             'id', 'build_type', 'total_door_model', 'total_building', 'build_year', 'community_average_price', 'traffic_info',
             'school_info', 'door_model_introduction', 'community_introduction', 'community_img', 'community_name',
-            'lon', 'lat', 'right_info', 'mortgage_info', 'deed_year', 'last_sale_time', 'sale_time', 'is_only'
+            'lon', 'lat', 'right_info', 'mortgage_info', 'deed_year', 'last_sale_time', 'sale_time', 'is_only', 'tax_explain'
         ];
         $house_attach_model = self::getFiled($house, $house_attach_attributes);
         if (empty($house_attach)) {
