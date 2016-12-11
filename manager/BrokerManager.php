@@ -29,9 +29,9 @@ class BrokerManager
         }
     }
 
-    public static function getList($page_info, $list_name, $condition)
+    public static function getList($page_info, $list_name, $condition, $broker_type_condition)
     {
-        $data = BrokerModel::model()->getList($page_info, $list_name, $condition);
+        $data = BrokerModel::model()->getList($page_info, $list_name, $condition, [], $broker_type_condition);
         if (!empty($data[$list_name])) {
             $broker_list = $data[$list_name];
             $class_ids = array_column($broker_list, 'position_id');

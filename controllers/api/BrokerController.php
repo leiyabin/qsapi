@@ -13,6 +13,7 @@ use app\consts\ErrorCode;
 use app\exception\RequestException;
 use app\manager\BrokerManager;
 use app\models\BrokerModel;
+use app\consts\HouseConst;
 
 class BrokerController extends LController
 {
@@ -26,7 +27,19 @@ class BrokerController extends LController
         if (!empty($this->params['name'])) {
             $condition['name'] = $this->params['name'];
         }
-        $data = BrokerManager::getList($pageInfo, 'broker_list', $condition);
+        $broker_type_condition = '';
+        if (!empty($this->params['broker_type'])) {
+            $broker_type = $this->params['broker_type'];
+            $condition_str_arr = [];
+            foreach ($broker_type as $value) {
+                if (!isset(HouseConst::$broker_type[$value])) {
+                    throw new RequestException('经纪人标签区间不对!', ErrorCode::INVALID_PARAM);
+                }
+                $condition_str_arr[] = " (`tag` like '%" . $value . "%' ) ";
+            }
+            $broker_type_condition = implode('or', $condition_str_arr);
+        }
+        $data = BrokerManager::getList($pageInfo, 'broker_list', $condition, $broker_type_condition);
         return $this->renderPage($data, $pageInfo);
     }
 
@@ -55,7 +68,7 @@ class BrokerController extends LController
     public function actionEdit()
     {
         $broker = $this->params;
-        $requires = ['id', 'name', 'position_id', 'phone','tag'];
+        $requires = ['id', 'name', 'position_id', 'phone', 'tag'];
         foreach ($requires as $require) {
             if (empty($this->params[$require])) {
                 throw new RequestException($require . '不能为空', ErrorCode::INVALID_PARAM);
