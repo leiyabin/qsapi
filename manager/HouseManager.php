@@ -69,11 +69,11 @@ class HouseManager
     }
 
     public static function getList($page_info, $list_name, $condition, $select, $average_price_condition = [],
-                                   $build_area_condition = [], $order_by = 'c_t')
+                                   $build_area_condition = [], $order_by = 'c_t', $filter_conditions = [])
     {
         $condition['is_deleted'] = 0;
         $data = HouseModel::model()->getList($page_info, $list_name, $condition, $select, $average_price_condition,
-            $build_area_condition, $order_by);
+            $build_area_condition, $order_by, $filter_conditions);
         if (!empty($data[$list_name])) {
             $house_list = $data[$list_name];
             $area_ids = array_column($house_list, 'area_id');

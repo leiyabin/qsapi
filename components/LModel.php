@@ -65,7 +65,7 @@ class LModel extends ActiveRecord
     }
 
     public function getList($page_info, $list_name, $condition = [], $select = ['*'],
-                            $add_condition_1 = [], $add_condition_2 = [], $order_by = '')
+                            $add_condition_1 = [], $add_condition_2 = [], $order_by = '', $filter_conditions = [])
     {
         $limit = $page_info['limit'];
         $offset = $page_info['offset'];
@@ -73,8 +73,13 @@ class LModel extends ActiveRecord
             ->addSelect($select)
             ->where($condition)
             ->andWhere($add_condition_1)
-            ->andWhere($add_condition_2)
-            ->limit($limit)
+            ->andWhere($add_condition_2);
+        if (!empty($filter_conditions)) {
+            foreach ($filter_conditions as $filter_condition) {
+                $list = $list->andFilterWhere($filter_condition);
+            }
+        }
+        $list = $list->limit($limit)
             ->offset($offset)
             ->addOrderBy(empty($order_by) ? ['id' => SORT_DESC] : [$order_by => SORT_DESC])
             ->asArray()
@@ -83,8 +88,13 @@ class LModel extends ActiveRecord
             ->addSelect(['id'])
             ->where($condition)
             ->andWhere($add_condition_1)
-            ->andWhere($add_condition_2)
-            ->count('id');
+            ->andWhere($add_condition_2);
+        if (!empty($filter_conditions)) {
+            foreach ($filter_conditions as $filter_condition) {
+                $total = $total->andFilterWhere($filter_condition);
+            }
+        }
+        $total = $total->count('id');
         $res = [$list_name => $list, 'total' => $total];
         return $res;
     }
