@@ -55,7 +55,7 @@ class BrokerController extends LController
     public function actionEdit()
     {
         $broker = $this->params;
-        $requires = ['id', 'name', 'position_id', 'phone'];
+        $requires = ['id', 'name', 'position_id', 'phone','tag'];
         foreach ($requires as $require) {
             if (empty($this->params[$require])) {
                 throw new RequestException($require . '不能为空', ErrorCode::INVALID_PARAM);

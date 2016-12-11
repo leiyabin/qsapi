@@ -166,4 +166,21 @@ class HouseConst
         self::BUILD_TYPE_2 => '板楼',
         self::BUILD_TYPE_3 => '塔板结合',
     ];
+
+    //经纪人标签
+    const BROKER_TYPE_1 = 1;
+    const BROKER_TYPE_2 = 2;
+    const BROKER_TYPE_3 = 3;
+    const BROKER_TYPE_4 = 4;
+    const BROKER_TYPE_5 = 5;
+    const BROKER_TYPE_6 = 6;
+
+    public static $broker_type = [
+        self::BROKER_TYPE_1 => '房东信赖',
+        self::BROKER_TYPE_2 => '客户热评',
+        self::BROKER_TYPE_3 => '销售达人',
+        self::BROKER_TYPE_4 => '带看活跃',
+        self::BROKER_TYPE_5 => '法律顾问',
+        self::BROKER_TYPE_6 => '海外顾问',
+    ];
 }
