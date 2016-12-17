@@ -10,8 +10,10 @@ namespace app\manager;
 
 use app\components\Utils;
 use app\consts\ErrorCode;
+use app\consts\HouseConst;
 use app\consts\LogConst;
 use app\exception\RequestException;
+use app\exception\ResponseException;
 use app\models\BrokerModel;
 use app\models\ValueModel;
 use Yii;

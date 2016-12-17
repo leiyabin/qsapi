@@ -10,6 +10,8 @@ namespace app\components;
 
 use app\consts\ErrorCode;
 use app\exception\RequestException;
+use Yii;
+use app\consts\LogConst;
 
 use yii\db\ActiveRecord;
 
@@ -28,13 +30,79 @@ class LModel extends ActiveRecord
         }
     }
 
-    public function getListByCondition($condition, $select = ['*'])
+    //todo 逐步替换掉
+    public function getList($page_info, $list_name, $condition = [], $select = ['*'],
+                            $add_condition_1 = [], $add_condition_2 = [], $order_by = '', $filter_conditions = [])
     {
-        $list = $this->find()
+        //list
+        $model = $this->find()
             ->addSelect($select)
             ->where($condition)
-            ->asArray()
-            ->all();
+            ->andWhere($add_condition_1)
+            ->andWhere($add_condition_2);
+        if (!empty($filter_conditions)) {
+            foreach ($filter_conditions as $filter_condition) {
+                $model = $model->andFilterWhere($filter_condition);
+            }
+        }
+        $total_model = clone $model;
+        $limit = $page_info['limit'];
+        $offset = $page_info['offset'];
+        $model = $model->limit($limit)
+            ->offset($offset)
+            ->addOrderBy(empty($order_by) ? ['id' => SORT_DESC] : [$order_by => SORT_DESC])
+            ->asArray();
+        $this->outputSql($model);
+        $list = $model->all();
+        //total
+        $total = $total_model->count('id');
+        $res = [$list_name => $list, 'total' => $total];
+        return $res;
+    }
+
+    //todo 逐渐废弃
+    public function updateById($data)
+    {
+        $id = $data['id'];
+        $class = get_called_class();
+        $model = $class::findOne($id);
+        if (empty($model)) {
+            throw new RequestException('该条记录不存在', ErrorCode::ACTION_ERROR);
+        } else {
+            try {
+                $model->setAttributes($data);
+                $model->save();
+            } catch (\Exception $e) {
+                throw new RequestException($e->getMessage(), ErrorCode::SYSTEM_ERROR);
+            }
+        }
+    }
+
+    //============================以下是重构方法=============================
+    public function _updateById($id, array $attributes)
+    {
+        $class = get_called_class();
+        $model = $class::findOne($id);
+        if (empty($model)) {
+            throw new RequestException('该条记录不存在', ErrorCode::ACTION_ERROR);
+        } else {
+            try {
+                $model->setAttributes($attributes);
+                $model->save();
+            } catch (\Exception $e) {
+                throw new RequestException($e->getMessage(), ErrorCode::SYSTEM_ERROR);
+            }
+        }
+    }
+
+    public function getListByCondition($condition, $select = ['*'])
+    {
+        $model = $this->find()
+            ->addSelect($select)
+            ->where($condition)
+            ->asArray();
+        $this->outputSql($model);
+        $list = $model->all();
         return $list;
     }
 
@@ -52,51 +120,6 @@ class LModel extends ActiveRecord
         $class = get_called_class();
         $condition = ['id' => $ids];
         $class::deleteAll($condition);
-    }
-
-    public function getById($id, $select = ['*'])
-    {
-        $model = $this->find()
-            ->addSelect($select)
-            ->where(['id' => $id])
-            ->asArray()
-            ->one();
-        return $model;
-    }
-
-    public function getList($page_info, $list_name, $condition = [], $select = ['*'],
-                            $add_condition_1 = [], $add_condition_2 = [], $order_by = '', $filter_conditions = [])
-    {
-        $limit = $page_info['limit'];
-        $offset = $page_info['offset'];
-        $list = $this->find()
-            ->addSelect($select)
-            ->where($condition)
-            ->andWhere($add_condition_1)
-            ->andWhere($add_condition_2);
-        if (!empty($filter_conditions)) {
-            foreach ($filter_conditions as $filter_condition) {
-                $list = $list->andFilterWhere($filter_condition);
-            }
-        }
-        $list = $list->limit($limit)
-            ->offset($offset)
-            ->addOrderBy(empty($order_by) ? ['id' => SORT_DESC] : [$order_by => SORT_DESC])
-            ->asArray()
-            ->all();
-        $total = $this->find()
-            ->addSelect(['id'])
-            ->where($condition)
-            ->andWhere($add_condition_1)
-            ->andWhere($add_condition_2);
-        if (!empty($filter_conditions)) {
-            foreach ($filter_conditions as $filter_condition) {
-                $total = $total->andFilterWhere($filter_condition);
-            }
-        }
-        $total = $total->count('id');
-        $res = [$list_name => $list, 'total' => $total];
-        return $res;
     }
 
     public function add($model)
@@ -133,8 +156,58 @@ class LModel extends ActiveRecord
             $bind_name = ':' . $v;
             $command->bindValue($bind_name, null === $model[$v] ? '' : $model[$v]);
         }
+        if (YII_DEBUG) {
+            $sql_log = sprintf('【sql】: %s , 【params】: %s', $sql, $fields);
+            Yii::trace($sql_log, LogConst::SQL);
+        }
         $result = $command->query();
         return $result->count();
+    }
+
+    public function getById($id, $select = ['*'])
+    {
+        $model = $this->find()
+            ->addSelect($select)
+            ->where(['id' => $id])
+            ->asArray()
+            ->one();
+        return $model;
+    }
+
+    public function getPageList($condition = [], $str_condition = [], $filter_conditions = [], $order_by = [],
+                                $select = ['*'], $page_info = null)
+    {
+        if (empty($order_by)) {
+            $order_by = ['id' => SORT_DESC];
+        }
+        $limit = 20;
+        $offset = 0;
+        if (!empty($page_info)) {
+            $limit = $page_info['limit'];
+            $offset = $page_info['offset'];
+        }
+        $model = $this->find()
+            ->addSelect($select)
+            ->where($condition);
+        if (empty($str_condition)) {
+            $model = $model->andWhere($str_condition);
+        }
+        if (empty($filter_conditions)) {
+            foreach ($filter_conditions as $filter_condition) {
+                $model = $model->andFilterWhere($filter_condition);
+            }
+        }
+        $total_model = clone $model;
+        $model = $model->limit($limit)
+            ->offset($offset)
+            ->addOrderBy($order_by)
+            ->asArray();
+        $this->outputSql($model);
+        $list = $model->all();
+        $total = $total_model->count('*');
+        $res = ['list' => $list, 'total' => $total];
+        return $res;
+
     }
 
     public function updateByCondition($condition, $attributes)
@@ -144,20 +217,14 @@ class LModel extends ActiveRecord
         return $class::updateAllCounters($attributes, $condition);
     }
 
-    public function updateById($data)
+    //tools function
+    public function outputSql(&$model)
     {
-        $id = $data['id'];
-        $class = get_called_class();
-        $model = $class::findOne($id);
-        if (empty($model)) {
-            throw new RequestException('该条记录不存在', ErrorCode::ACTION_ERROR);
-        } else {
-            try {
-                $model->setAttributes($data);
-                $model->save();
-            } catch (\Exception $e) {
-                throw new RequestException($e->getMessage(), ErrorCode::SYSTEM_ERROR);
-            }
+        if (YII_DEBUG) {
+            $clone_model = clone $model;
+            $sql = $clone_model->createCommand()->getRawSql();
+            Yii::trace('【sql】:' . $sql, LogConst::SQL);
         }
     }
+
 }

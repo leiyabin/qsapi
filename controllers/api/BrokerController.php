@@ -14,6 +14,8 @@ use app\exception\RequestException;
 use app\manager\BrokerManager;
 use app\models\BrokerModel;
 use app\consts\HouseConst;
+use app\exception\ResponseException;
+use app\models\ValueModel;
 
 class BrokerController extends LController
 {
@@ -55,27 +57,57 @@ class BrokerController extends LController
 
     public function actionAdd()
     {
-        if (empty($this->params['position_id'])) {
-            throw new RequestException('position_id不能为空', ErrorCode::INVALID_PARAM);
-        }
+        $this->checkBroker();
         if (empty($this->params['code'])) {
             $this->params['code'] = $this->getPraiseNum();
         }
-        BrokerManager::add($this->params);
+        $broker = $this->params;
+        BrokerModel::model()->add($broker);
         return $this->success();
     }
 
     public function actionEdit()
     {
-        $broker = $this->params;
-        $requires = ['id', 'name', 'position_id', 'phone', 'tag'];
+        if (empty($this->params['id'])) {
+            throw new ResponseException('id不能为空！', ErrorCode::INVALID_PARAM);
+        }
+        $attributes = [
+            'name'        => $this->params['name'],
+            'position_id' => $this->params['position_id'],
+            'phone'       => $this->params['phone'],
+            'tag'         => $this->params['tag'],
+        ];
+        if (!empty($this->params['img'])) {
+            $attributes['img'] = $this->params['img'];
+        }
+        if (!empty($this->params['email'])) {
+            $attributes['email'] = $this->params['email'];
+        }
+        $this->checkBroker();
+        BrokerModel::model()->_updateById($this->params['id'], $attributes);
+        return $this->success();
+    }
+
+    private function checkBroker()
+    {
+        $requires = ['name', 'position_id', 'phone', 'tag'];
         foreach ($requires as $require) {
             if (empty($this->params[$require])) {
                 throw new RequestException($require . '不能为空', ErrorCode::INVALID_PARAM);
             }
         }
-        BrokerModel::model()->updateById($broker);
-        return $this->success();
+        $tag_str = $this->params['tag'];
+        $tag_arr = explode(',', $tag_str);
+        foreach ($tag_arr as $tag_val) {
+            if (!isset(HouseConst::$broker_type[$tag_val])) {
+                throw new ResponseException('经纪人标签不正确', ErrorCode::INVALID_PARAM);
+            }
+        }
+        $position_id = $this->params['position_id'];
+        $position = ValueModel::model()->getById($position_id);
+        if (empty($position)) {
+            throw new RequestException('职位不存在！', ErrorCode::ACTION_ERROR);
+        }
     }
 
     public function actionBatchdel()

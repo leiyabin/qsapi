@@ -42,14 +42,14 @@ class ConfigController extends LController
 
     public function actionClassedit()
     {
-        $model = $this->params;
         $requires = ['id', 'name'];
         foreach ($requires as $require) {
             if (empty($this->params[$require])) {
                 throw new RequestException($require . '不能为空', ErrorCode::INVALID_PARAM);
             }
         }
-        ClassModel::model()->updateById($model);
+        $attributes = ['name' => $this->params['name']];
+        ClassModel::model()->_updateById($this->params['id'], $attributes);
         return $this->success();
     }
 
