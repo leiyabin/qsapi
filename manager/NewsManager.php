@@ -33,7 +33,8 @@ class NewsManager
 
     public static function getNewsList($page_info, $list_name, $condition)
     {
-        $data = NewsModel::model()->getList($page_info, $list_name, $condition);
+        $select = ['id', 'class_id', 'title', 'summary', 'hot_img', 'recommend_img', 'img', 'recommend', 'hot', 'c_t'];
+        $data = NewsModel::model()->getList($page_info, $list_name, $condition, $select);
         if (!empty($data[$list_name])) {
             $news_list = $data[$list_name];
             $class_ids = array_column($news_list, 'class_id');
@@ -50,6 +51,24 @@ class NewsManager
             $data[$list_name] = $news_list;
         }
         return $data;
+    }
+
+    public static function getList($condition, $limit)
+    {
+        $select = ['id', 'class_id', 'title', 'summary', 'hot_img', 'recommend_img', 'img', 'recommend', 'hot', 'c_t'];
+        $news_list = NewsModel::model()->getFewList($condition, $limit, $select);
+        $class_ids = array_column($news_list, 'class_id');
+        $class_list = ValueModel::model()->getListByCondition(['id' => $class_ids]);
+        $class_list = Utils::buildIdArray($class_list);
+        foreach ($news_list as $key => $value) {
+            if (!isset($class_list[$value['class_id']])) {
+                $error_msg = sprintf('分类不存在 news_id: %d ,class_id: %d', $value['id'], $value['class_id']);
+                Yii::error($error_msg, LogConst::APPLICATION);
+                throw new RequestException('获取分类信息错误', ErrorCode::SYSTEM_ERROR);
+            }
+            $news_list[$key]['class_name'] = $class_list[$value['class_id']]['value'];
+        }
+        return $news_list;
     }
 
     public static function get($id)

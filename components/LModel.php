@@ -217,6 +217,21 @@ class LModel extends ActiveRecord
         return $class::updateAllCounters($attributes, $condition);
     }
 
+    public function getFewList($condition, $limit, $select = ['*'])
+    {
+        $order_by = ['id' => SORT_DESC];
+        $model = $this->find()
+            ->addSelect($select)
+            ->where($condition)
+            ->offset(0)
+            ->limit($limit)
+            ->addOrderBy($order_by)
+            ->asArray();
+        $this->outputSql($model);
+        $list = $model->all();
+        return $list;
+    }
+
     //tools function
     public function outputSql(&$model)
     {

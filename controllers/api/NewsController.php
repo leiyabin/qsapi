@@ -11,6 +11,7 @@ namespace app\controllers\api;
 use app\components\LController;
 use app\consts\ErrorCode;
 use app\exception\RequestException;
+use app\exception\ResponseException;
 use app\manager\NewsManager;
 use app\models\NewsModel;
 
@@ -40,6 +41,27 @@ class NewsController extends LController
         }
         $data = NewsManager::getNewsList($pageInfo, 'news_list', $condition);
         return $this->renderPage($data, $pageInfo);
+    }
+
+    public function actionFewlist()
+    {
+        if (empty($this->params['limit'])) {
+            throw new ResponseException('limit不能为空！', ErrorCode::INVALID_PARAM);
+        }
+        $condition = [];
+        if (!empty($this->params['tag'])) {
+            if ($this->params['tag'] == self::NEWS_TAG_HOT) {
+                $condition['hot'] = 1;
+            }
+            if ($this->params['tag'] == self::NEWS_TAG_RECOMMEND) {
+                $condition['recommend'] = 1;
+            }
+        }
+        if (!empty($this->params['class_id'])) {
+            $condition['class_id'] = $this->params['class_id'];
+        }
+        $list = NewsManager::getList($condition, $this->params['limit']);
+        return $this->success($list);
     }
 
     public function actionGet()

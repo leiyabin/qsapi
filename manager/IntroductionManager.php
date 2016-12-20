@@ -7,6 +7,7 @@
  */
 
 namespace app\manager;
+
 use app\models\ClassModel;
 use app\models\IntroductionModel;
 use app\exception\RequestException;
@@ -30,7 +31,8 @@ class IntroductionManager
 
     public static function getIntroductionList($page_info, $list_name, $condition)
     {
-        $data = IntroductionModel::model()->getList($page_info, $list_name, $condition);
+        $select = ['id', 'class_id', 'title', 'summary', 'img', 'c_t'];
+        $data = IntroductionModel::model()->getList($page_info, $list_name, $condition, $select);
         if (!empty($data[$list_name])) {
             $news_list = $data[$list_name];
             $class_ids = array_column($news_list, 'class_id');
