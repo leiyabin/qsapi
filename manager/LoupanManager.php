@@ -183,6 +183,9 @@ class LoupanManager
     {
         //楼盘详情页信息
         $loupan = LouPanModel::model()->getById($id);
+        if(empty($loupan)){
+            return [];
+        }
         $area = AreaModel::model()->getById($loupan['area_id']);
         if (empty($area)) {
             $error_msg = sprintf('片区不存在： loupan_id: %d ,area_id: %d', $id, $loupan['area_id']);

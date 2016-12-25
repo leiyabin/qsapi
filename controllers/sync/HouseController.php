@@ -21,6 +21,7 @@ class HouseController extends LController
     public function actionStorage()
     {
         $params = $this->params;
+        $params = $this->iconvArray($params);
         $size = $params['API_pagesize'];
         $broker_list = $this->getBrokerList();
         $area_list = AreaManager::getAllArea();
@@ -44,6 +45,7 @@ class HouseController extends LController
             //area_id
             $quxian = $params['API_qx' . $i];
             $pianqu = $params['API_pq' . $i];
+
             $area_id = $this->getAreaIdByAreaAndQuxian($area_list, $pianqu, $quxian);
             if ($area_id == 0) {
                 $error_msg = sprintf('请先设置区县和片区！【区县】：%s | 【片区】：%s', $quxian, $pianqu);
@@ -87,6 +89,18 @@ class HouseController extends LController
             $this->opDb($house, $house_img);
         }
         $this->redirect('/sync/success/show');
+    }
+
+    private function iconvArray($params)
+    {
+        $conv_array = [];
+        foreach ($params as $key => $param) {
+            if (is_array($param)) {
+                $conv_array[$key] = $this->iconvArray($param);
+            }
+            $conv_array[$key] = iconv('gb2312', 'utf-8', $param);
+        }
+        return $conv_array;
     }
 
     private function getBrokerList()
@@ -141,7 +155,7 @@ class HouseController extends LController
             }
         }
         if ($img == '' && $img_list_arr_count > 0) {
-            $img = current($img_type_arr);
+            $img = current($img_list_arr);
         }
         for ($i = 0; $i < $img_list_arr_count; $i++) {
             $house_img_list['img_' . ($i + 1)] = $img_list_arr[$i];
