@@ -157,7 +157,7 @@ class LModel extends ActiveRecord
             $command->bindValue($bind_name, null === $model[$v] ? '' : $model[$v]);
         }
         if (YII_DEBUG) {
-            $sql_log = sprintf('【sql】: %s , 【params】: %s', $sql, $fields);
+            $sql_log = sprintf('【sql】: %s , 【params】: %s', $sql, json_encode($fields,true));
             Yii::trace($sql_log, LogConst::SQL);
         }
         $result = $command->query();
