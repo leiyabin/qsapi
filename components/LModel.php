@@ -157,7 +157,7 @@ class LModel extends ActiveRecord
             $command->bindValue($bind_name, null === $model[$v] ? '' : $model[$v]);
         }
         if (YII_DEBUG) {
-            $sql_log = sprintf('【sql】: %s , 【params】: %s', $sql, json_encode($fields,true));
+            $sql_log = sprintf('【sql】: %s , 【params】: %s', $sql, json_encode($fields, true));
             Yii::trace($sql_log, LogConst::SQL);
         }
         $result = $command->query();
@@ -166,15 +166,17 @@ class LModel extends ActiveRecord
 
     public function getById($id, $select = ['*'])
     {
-        $model = $this->find()
-            ->addSelect($select)
-            ->where(['id' => $id])
-            ->asArray()
-            ->one();
-        return $model;
+        $condition = ['id' => $id];
+        return $this->getOneByCondition($condition, $select);
     }
 
-    public function getPageList($condition = [], $str_condition = [], $filter_conditions = [], $order_by = [],
+    public function getListByIds($ids, $select = ['*'])
+    {
+        $condition = ['id' => $ids];
+        return $this->getListByCondition($condition, $select);
+    }
+
+    public function getPageList($condition = [], $str_condition = '', $filter_conditions = [], $order_by = [],
                                 $select = ['*'], $page_info = null)
     {
         if (empty($order_by)) {

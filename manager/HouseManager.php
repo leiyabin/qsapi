@@ -68,6 +68,7 @@ class HouseManager
         return HouseAttachModel::model()->getById($id);
     }
 
+    //todo 废弃
     public static function getList($page_info, $list_name, $condition, $select, $average_price_condition = [],
                                    $build_area_condition = [], $order_by = 'c_t', $filter_conditions = [])
     {
@@ -100,6 +101,32 @@ class HouseManager
                 }
             }
             $data[$list_name] = $house_list;
+        }
+        return $data;
+    }
+
+    public static function getPageList($condition, $str_condition, $filter_conditions, $order_by, $page_info)
+    {
+        $select = ['*'];
+        $data = HouseModel::model()->getPageList($condition, $str_condition, $filter_conditions, $order_by, $select, $page_info);
+        if (!empty($data['list'])) {
+            $house_list = $data['list'];
+            $area_ids = array_column($house_list, 'area_id');
+            $area_list = AreaManager::getAreaList($area_ids);
+            $area_list = Utils::buildIdArray($area_list);
+            foreach ($house_list as $key => $val) {
+                $house_list[$key]['decoration_name'] = HouseConst::$decoration[$val['decoration']];
+                $house_list[$key]['property_type'] = HouseConst::$property_type[$val['property_type_id']];
+                $house_list[$key]['right_type_name'] = HouseConst::$right_type[$val['right_type']];
+                $house_list[$key]['buy_type_name'] = HouseConst::$buy_type[$val['buy_type']];
+                if (!isset($area_list[$val['area_id']])) {
+                    $error_msg = sprintf('二手房片区id错误。house_id : %d ; area_id : %d .', $val['id'], $val['area_id']);
+                    throw new RequestException($error_msg, ErrorCode::SYSTEM_ERROR);
+                }
+                $house_list[$key]['area_name'] = $area_list[$val['area_id']]['name'];
+                $house_list[$key]['quxian_name'] = $area_list[$val['area_id']]['class_name'];
+            }
+            $data['list'] = $house_list;
         }
         return $data;
     }

@@ -35,6 +35,7 @@ class AreaManager
         AreaModel::model()->add($area);
     }
 
+    //todo 废弃
     public static function getList($page_info, $list_name, $condition = [])
     {
         $data = AreaModel::model()->getList($page_info, $list_name, $condition);
@@ -54,6 +55,25 @@ class AreaManager
             $data[$list_name] = $news_list;
         }
         return $data;
+    }
+
+    public static function getAreaList($area_ids)
+    {
+        $area_list = AreaModel::model()->getListByIds($area_ids);
+        if (!empty($area_list)) {
+            $class_ids = array_column($area_list, 'class_id');
+            $class_list = ValueModel::model()->getListByIds($class_ids);
+            $class_list = Utils::buildIdArray($class_list);
+            foreach ($area_list as $key => $area) {
+                if (!isset($class_list[$area['class_id']])) {
+                    $error_msg = sprintf('分类不存在 area_id: %d ,class_id: %d', $area['id'], $area['class_id']);
+                    Yii::error($error_msg, LogConst::APPLICATION);
+                    throw new RequestException('获取分类信息错误', ErrorCode::SYSTEM_ERROR);
+                }
+                $area_list[$key]['class_name'] = $class_list[$area['class_id']]['value'];
+            }
+        }
+        return $area_list;
     }
 
     public static function getAllArea()
