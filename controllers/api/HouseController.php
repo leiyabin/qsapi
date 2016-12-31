@@ -34,9 +34,25 @@ class HouseController extends LController
         if (!empty($this->params['recommend'])) {
             $condition['recommend'] = $this->params['recommend'];
         }
-
         //str condition
-        $str_condition = '';
+        $str_condition = ' 1=1 ';
+        if (!empty($this->params['room_type']) && is_array($this->params['room_type'])) {
+            $room_types = $this->params['room_type'];
+            $sql_interval = [];
+            foreach ($room_types as $value) {
+                if (!in_array($value, HouseConst::$room_type)) {
+                    throw new RequestException('房型区间不对!', ErrorCode::INVALID_PARAM);
+                }
+
+                $sql_interval[] = $value;
+            }
+            if (in_array(HouseConst::ROOM_TYPE_6, $sql_interval)) {
+                $str_condition .= sprintf(' and (`jishi` in (%s) or `jishi` >= %d )', implode(',', $sql_interval), HouseConst::ROOM_TYPE_6);
+            } else {
+                $str_condition .= sprintf(' and (`jishi` in (%s) )', implode(',', $sql_interval));
+            }
+        }
+
         if (!empty($this->params['price_interval']) && is_array($this->params['price_interval'])) {
             $price_interval = $this->params['price_interval'];
             $condition_str_arr = [];
@@ -44,10 +60,10 @@ class HouseController extends LController
                 if (!isset(HouseConst::$price_interval[$value])) {
                     throw new RequestException('均价区间不对!', ErrorCode::INVALID_PARAM);
                 }
-                $condition_str_arr[] = sprintf(' (`total_price` >= %s and `total_price` <= %s ) ', HouseConst::$price_interval[$value][0],
+                $condition_str_arr[] = sprintf(' (`total_price` >= %d and `total_price` <= %d ) ', HouseConst::$price_interval[$value][0],
                     HouseConst::$price_interval[$value][1]);
             }
-            $str_condition .= ' and (' . implode('or', $condition_str_arr) . ')';
+            $str_condition .= ' and ( ' . implode('or', $condition_str_arr) . ' )';
         }
         if (!empty($this->params['build_area']) && is_array($this->params['build_area'])) {
             $build_area = $this->params['build_area'];
@@ -59,13 +75,15 @@ class HouseController extends LController
                 $condition_str_arr[] = sprintf(' (`build_area` >= %d and `build_area` <= %d ) ', HouseConst::$area_interval[$value][0],
                     HouseConst::$area_interval[$value][1]);
             }
-            $str_condition .= ' and (' . implode('or', $condition_str_arr) . ')';
+            $str_condition .= ' and ( ' . implode('or', $condition_str_arr) . ' )';
         }
 
         //filter conditions
         $filter_conditions = [];
-        if (!empty($this->params['rs'])) {
-            $filter_conditions[] = ['like', 'tag', $this->params['rs']];
+        if (!empty($this->params['tag'])) {
+            $filter_conditions[] = ['like', 'tag', $this->params['tag']];
+//            if (!empty($this->params['school'])) {
+//                $filter_conditions[] = ['like', 'tag', $this->params['tag']];
         }
         if (!empty($this->params['address'])) {
             $filter_conditions[] = ['like', 'address', $this->params['address']];
@@ -107,7 +125,7 @@ class HouseController extends LController
         $requires = ['size'];
         $this->checkEmpty($requires);
         $condition['recommend'] = 1;
-        $model = HouseModel::model()->getListByCondition($condition, 0, $this->params['size']);
+        $model = HouseModel::model()->getFewList($condition, $this->params['size']);
         return $this->success($model);
     }
 }

@@ -183,4 +183,21 @@ class HouseConst
         self::BROKER_TYPE_5 => '法律顾问',
         self::BROKER_TYPE_6 => '海外顾问',
     ];
+
+    //房型
+    const ROOM_TYPE_1 = 1;
+    const ROOM_TYPE_2 = 2;
+    const ROOM_TYPE_3 = 3;
+    const ROOM_TYPE_4 = 4;
+    const ROOM_TYPE_5 = 5;
+    const ROOM_TYPE_6 = 6;
+
+    public static $room_type = [
+        self::ROOM_TYPE_1,
+        self::ROOM_TYPE_2,
+        self::ROOM_TYPE_3,
+        self::ROOM_TYPE_4,
+        self::ROOM_TYPE_5,
+        self::ROOM_TYPE_6,
+    ];
 }

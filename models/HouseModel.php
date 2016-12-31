@@ -44,15 +44,4 @@ class HouseModel extends LModel
         ];
     }
 
-    public function getListByCondition($condition, $offset = 0, $limit = 20, $select = ['*'])
-    {
-        $list = $this->find()
-            ->addSelect($select)
-            ->where($condition)
-            ->limit($limit)
-            ->offset($offset)
-            ->asArray()
-            ->all();
-        return $list;
-    }
 }

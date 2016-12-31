@@ -191,10 +191,10 @@ class LModel extends ActiveRecord
         $model = $this->find()
             ->addSelect($select)
             ->where($condition);
-        if (empty($str_condition)) {
+        if (!empty($str_condition)) {
             $model = $model->andWhere($str_condition);
         }
-        if (empty($filter_conditions)) {
+        if (!empty($filter_conditions)) {
             foreach ($filter_conditions as $filter_condition) {
                 $model = $model->andFilterWhere($filter_condition);
             }
