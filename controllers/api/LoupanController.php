@@ -13,6 +13,7 @@ use app\consts\ErrorCode;
 use app\exception\RequestException;
 use app\manager\LoupanManager;
 use app\consts\HouseConst;
+use app\models\LouPanModel;
 
 class LoupanController extends LController
 {
@@ -26,15 +27,20 @@ class LoupanController extends LController
 
     public function actionList()
     {
-        $pageInfo = $this->pageInfo();
+        $page_info = $this->pageInfo();
+        //condition
         $condition = [];
         if (!empty($this->params['area_id'])) {
             $condition['area_id'] = $this->params['area_id'];
         }
-        if (!empty($this->params['name'])) {
-            $condition['name'] = $this->params['name'];
+        if (!empty($this->params['property_type_id'])) {
+            $condition['property_type_id'] = $this->params['property_type_id'];
         }
-        $add_condition = [];
+        if (!empty($this->params['sale_status'])) {
+            $condition['sale_status'] = $this->params['sale_status'];
+        }
+        //str_condition
+        $str_condition = ' 1=1 ';
         if (!empty($this->params['average_price']) && is_array($this->params['average_price'])) {
             $average_price = $this->params['average_price'];
             $condition_str_arr = [];
@@ -45,19 +51,22 @@ class LoupanController extends LController
                 $condition_str_arr[] = sprintf(' (`average_price` >= %d and `average_price` <= %d ) ', HouseConst::$price_interval[$value][0],
                     HouseConst::$price_interval[$value][1]);
             }
-            $add_condition = implode('or', $condition_str_arr);
+            $str_condition .= ' and ( ' . implode('or', $condition_str_arr) . ' ) ';
         }
-        if (!empty($this->params['property_type_id'])) {
-            $condition['property_type_id'] = $this->params['property_type_id'];
+        //filter conditions
+        $filter_conditions = [];
+        if (!empty($this->params['name'])) {
+            $filter_conditions[] = ['like', 'name', $this->params['name']];
         }
-        if (!empty($this->params['sale_status'])) {
-            $condition['sale_status'] = $this->params['sale_status'];
+        if (!empty($this->params['room_type'])) {
+            $filter_conditions[] = ['like', 'jiju', $this->params['room_type']];
         }
-        if (!empty($this->params['recommend'])) {
-            $condition['recommend'] = $this->params['recommend'];
-        }
-        $data = LoupanManager::getList($pageInfo, 'loupan_list', $condition, [], $add_condition);
-        return $this->renderPage($data, $pageInfo);
+        //order by
+        $order_by = $this->getRequestParam('order_by', 'id');
+        $sort = $this->getRequestParam('sort', SORT_DESC);
+        $order_by_condition = [$order_by => $sort];
+        $data = LoupanManager::getPageList($condition, $str_condition, $filter_conditions, $order_by_condition, $page_info);
+        return $this->renderPage($data, $page_info);
     }
 
     public function actionGet()
@@ -103,6 +112,15 @@ class LoupanController extends LController
             throw new RequestException('id参数为空！', ErrorCode::INVALID_PARAM);
         }
         $model = LoupanManager::getLoupanSimple($this->params['id']);
+        return $this->success($model);
+    }
+
+    public function actionGetrecommend()
+    {
+        $requires = ['size'];
+        $this->checkEmpty($requires);
+        $condition['recommend'] = 1;
+        $model = LouPanModel::model()->getFewList($condition, $this->params['size']);
         return $this->success($model);
     }
 }

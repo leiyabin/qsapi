@@ -58,6 +58,30 @@ class LoupanManager
         return $data;
     }
 
+    public static function getPageList($condition, $str_condition, $filter_conditions, $order_by, $page_info)
+    {
+        $select = ['*'];
+        $data = LouPanModel::model()->getPageList($condition, $str_condition, $filter_conditions, $order_by, $select, $page_info);
+        if (!empty($data['list'])) {
+            $loupan_list = $data['list'];
+            $area_ids = array_column($loupan_list, 'area_id');
+            $areas = AreaModel::model()->getListByCondition(['id' => $area_ids]);
+            $areas = Utils::buildIdArray($areas);
+            foreach ($loupan_list as $key => $val) {
+                $loupan_list[$key]['sale_status_name'] = HouseConst::$sale_status[$val['sale_status']];
+                $loupan_list[$key]['property_type'] = HouseConst::$property_type[$val['property_type_id']];
+                $loupan_list[$key]['tag_map'] = self::buildTagMap($val['tag']);
+                if (!isset($areas[$val['area_id']])) {
+                    $error_msg = sprintf('楼盘片区id错误。loupan_id : %d ; area_id : %d .', $val['id'], $val['area_id']);
+                    throw new RequestException($error_msg, ErrorCode::SYSTEM_ERROR);
+                }
+                $loupan_list[$key]['area_name'] = $areas[$val['area_id']]['name'];
+            }
+            $data['list'] = $loupan_list;
+        }
+        return $data;
+    }
+
     public static function getDoorModelList($loupan_id)
     {
         $condition = ['loupan_id' => $loupan_id];

@@ -81,6 +81,7 @@ class LModel extends ActiveRecord
     //============================以下是重构方法=============================
     public function _updateById($id, array $attributes)
     {
+        Yii::info(json_encode($attributes));
         $class = get_called_class();
         $model = $class::findOne($id);
         if (empty($model)) {

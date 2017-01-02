@@ -21,7 +21,6 @@ class HouseController extends LController
     {
         //page info
         $page_info = $this->pageInfo();
-
         //condition
         $condition = [];
         $condition['is_deleted'] = 0;
@@ -31,11 +30,8 @@ class HouseController extends LController
         if (!empty($this->params['property_type_id'])) {
             $condition['property_type_id'] = $this->params['property_type_id'];
         }
-        if (!empty($this->params['recommend'])) {
-            $condition['recommend'] = $this->params['recommend'];
-        }
         //str condition
-        $str_condition = ' 1=1 ';
+        $str_condition_sql = ' 1=1 ';
         if (!empty($this->params['room_type']) && is_array($this->params['room_type'])) {
             $room_types = $this->params['room_type'];
             $sql_interval = [];
@@ -47,9 +43,9 @@ class HouseController extends LController
                 $sql_interval[] = $value;
             }
             if (in_array(HouseConst::ROOM_TYPE_6, $sql_interval)) {
-                $str_condition .= sprintf(' and (`jishi` in (%s) or `jishi` >= %d )', implode(',', $sql_interval), HouseConst::ROOM_TYPE_6);
+                $str_condition_sql .= sprintf(' and (`jishi` in (%s) or `jishi` >= %d )', implode(',', $sql_interval), HouseConst::ROOM_TYPE_6);
             } else {
-                $str_condition .= sprintf(' and (`jishi` in (%s) )', implode(',', $sql_interval));
+                $str_condition_sql .= sprintf(' and (`jishi` in (%s) )', implode(',', $sql_interval));
             }
         }
 
@@ -63,7 +59,7 @@ class HouseController extends LController
                 $condition_str_arr[] = sprintf(' (`total_price` >= %d and `total_price` <= %d ) ', HouseConst::$price_interval[$value][0],
                     HouseConst::$price_interval[$value][1]);
             }
-            $str_condition .= ' and ( ' . implode('or', $condition_str_arr) . ' )';
+            $str_condition_sql .= ' and ( ' . implode('or', $condition_str_arr) . ' )';
         }
         if (!empty($this->params['build_area']) && is_array($this->params['build_area'])) {
             $build_area = $this->params['build_area'];
@@ -75,25 +71,34 @@ class HouseController extends LController
                 $condition_str_arr[] = sprintf(' (`build_area` >= %d and `build_area` <= %d ) ', HouseConst::$area_interval[$value][0],
                     HouseConst::$area_interval[$value][1]);
             }
-            $str_condition .= ' and ( ' . implode('or', $condition_str_arr) . ' )';
+            $str_condition_sql .= ' and ( ' . implode('or', $condition_str_arr) . ' )';
         }
-
-        //filter conditions
-        $filter_conditions = [];
-        if (!empty($this->params['tag'])) {
-            $filter_conditions[] = ['like', 'tag', $this->params['tag']];
-//            if (!empty($this->params['school'])) {
-//                $filter_conditions[] = ['like', 'tag', $this->params['tag']];
+        //operate_conditions
+        $operate_conditions = [];
+        if (!empty($this->params['school_info'])) {
+            $condition['is_school_house'] = 1;
+            $str_condition_sql .= ' and (`school_info` like :school_info or `address` like :address ) ';
+            $str_condition_params = [
+                ':school_info' => '%' . $this->params['school_info'] . '%',
+                ':address'     => '%' . $this->params['school_info'] . '%'
+            ];
+        } else {
+            if (!empty($this->params['address'])) {
+                $operate_conditions[] = ['like', 'address', $this->params['address']];
+            }
         }
-        if (!empty($this->params['address'])) {
-            $filter_conditions[] = ['like', 'address', $this->params['address']];
-        }
+        $str_condition = [
+            'sql'    => empty($str_condition_sql) ? '' : $str_condition_sql,
+            'params' => empty($str_condition_params) ? [] : $str_condition_params
+        ];
 
         //order by
         $order_by = $this->getRequestParam('order_by', 'id');
         $sort = $this->getRequestParam('sort', SORT_DESC);
         $order_by_condition = [$order_by => $sort];
-        $data = HouseManager::getPageList($condition, $str_condition, $filter_conditions, $order_by_condition, $page_info);
+
+
+        $data = HouseManager::getPageList($condition, $str_condition, $operate_conditions, $order_by_condition, $page_info);
         return $this->renderPage($data, $page_info);
     }
 
@@ -110,12 +115,13 @@ class HouseController extends LController
     {
         $requires = [
             'id', 'build_type', 'total_door_model', 'total_building', 'build_year', 'community_average_price', 'traffic_info',
-            'school_info', 'door_model_introduction', 'community_introduction', 'community_img', 'community_name',
+            'door_model_introduction', 'community_introduction', 'community_img', 'community_name',
             'lon', 'lat', 'right_info', 'mortgage_info', 'deed_year', 'last_sale_time', 'sale_time', 'tag'
         ];
         $this->checkEmpty($requires);
         $this->params['recommend'] = $this->getRequestParam('recommend', 0);
         $this->params['is_only'] = $this->getRequestParam('is_only', 0);
+        $this->params['is_school_house'] = $this->getRequestParam('is_school_house', 0);
         HouseManager::editHouseAttach($this->params);
         return $this->success();
     }

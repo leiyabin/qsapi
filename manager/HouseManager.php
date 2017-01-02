@@ -68,10 +68,10 @@ class HouseManager
         return HouseAttachModel::model()->getById($id);
     }
 
-    public static function getPageList($condition, $str_condition, $filter_conditions, $order_by, $page_info)
+    public static function getPageList($condition, $str_condition, $operate_conditions, $order_by, $page_info)
     {
         $select = ['*'];
-        $data = HouseModel::model()->getPageList($condition, $str_condition, $filter_conditions, $order_by, $select, $page_info);
+        $data = HouseModel::model()->getPageList($condition, $str_condition, $operate_conditions, $order_by, $select, $page_info);
         if (!empty($data['list'])) {
             $house_list = $data['list'];
             $area_ids = array_column($house_list, 'area_id');
@@ -126,17 +126,18 @@ class HouseManager
     {
         self::checkHouse($house);
         $house_attributes = [
-            'id'        => $house['id'],
-            'lon'       => $house['lon'],
-            'lat'       => $house['lat'],
-            'tag'       => $house['tag'],
-            'recommend' => $house['recommend'],
+            'lon'             => $house['lon'],
+            'lat'             => $house['lat'],
+            'tag'             => $house['tag'],
+            'recommend'       => $house['recommend'],
+            'is_school_house' => $house['is_school_house'],
+            'school_info'     => $house['school_info'],
         ];
-        HouseModel::model()->updateById($house_attributes);
+        HouseModel::model()->_updateById($house['id'], $house_attributes);
         $house_attach = HouseAttachModel::model()->getById($house['id']);
         $house_attach_attributes = [
             'id', 'build_type', 'total_door_model', 'total_building', 'build_year', 'community_average_price', 'traffic_info',
-            'school_info', 'door_model_introduction', 'community_introduction', 'community_img', 'community_name',
+            'door_model_introduction', 'community_introduction', 'community_img', 'community_name',
             'lon', 'lat', 'right_info', 'mortgage_info', 'deed_year', 'last_sale_time', 'sale_time', 'is_only', 'tax_explain'
         ];
         $house_attach_model = self::getFiled($house, $house_attach_attributes);
