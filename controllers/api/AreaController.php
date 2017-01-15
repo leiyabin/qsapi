@@ -20,14 +20,10 @@ class AreaController extends LController
     public function actionList()
     {
         $pageInfo = $this->pageInfo();
-        $condition = [];
-        if (!empty($this->params['class_id'])) {
-            $condition['class_id'] = $this->params['class_id'];
-        }
-        if (!empty($this->params['name'])) {
-            $condition['name'] = $this->params['name'];
-        }
-        $data = AreaManager::getList($pageInfo, 'area_list', $condition);
+        $is_trip_area = empty($this->params['is_trip_area']) ? false : true;
+        $class_id = empty($this->params['class_id']) ? 0 : $this->params['class_id'];
+        $name = empty($this->params['name']) ? '' : $this->params['name'];
+        $data = AreaManager::getPageList($pageInfo, $class_id, $is_trip_area, $name);
         return $this->renderPage($data, $pageInfo);
     }
 

@@ -35,26 +35,38 @@ class AreaManager
         AreaModel::model()->add($area);
     }
 
-    //todo 废弃
-    public static function getList($page_info, $list_name, $condition = [])
+    public static function getPageList($page_info, $class_id = 0, $is_trip_area = false, $name = '')
     {
-        $data = AreaModel::model()->getList($page_info, $list_name, $condition);
-        if (!empty($data[$list_name])) {
-            $news_list = $data[$list_name];
-            $class_ids = array_column($news_list, 'class_id');
-            $class_list = ValueModel::model()->getListByCondition(['id' => $class_ids]);
-            $class_list = Utils::buildIdArray($class_list);
-            foreach ($news_list as $key => $value) {
-                if (!isset($class_list[$value['class_id']])) {
-                    $error_msg = sprintf('分类不存在 area_id: %d ,class_id: %d', $value['id'], $value['class_id']);
-                    Yii::error($error_msg, LogConst::APPLICATION);
-                    throw new RequestException('获取分类信息错误', ErrorCode::SYSTEM_ERROR);
-                }
-                $news_list[$key]['class_name'] = $class_list[$value['class_id']]['value'];
-            }
-            $data[$list_name] = $news_list;
+        $area_condition = [];
+        if (!empty($name)) {
+            $area_condition = ['name' => $name];
         }
-        return $data;
+        if (!empty($class_id)) {
+            $class = ValueModel::model()->getById($class_id);
+            $area_condition['class_id'] = $class_id;
+            $area_list = AreaModel::model()->getPageList($area_condition, '', [], [], ['*'], $page_info);
+            if (!empty($area_list['list'])) {
+                foreach ($area_list['list'] as $key => $list) {
+                    $area_list['list'][$key]['class_name'] = $class['value'];
+                }
+            }
+        } else {
+            $condition = ['class_id' => ConfigConst::AREA_CLASS_CONST];
+            if ($is_trip_area) {
+                $condition = ['class_id' => ConfigConst::TRIP_AREA_CLASS_CONST];
+            }
+            $class_list = ValueModel::model()->getListByCondition($condition);
+            $class_ids = array_column($class_list, 'id');
+            $class_id_array = Utils::buildIdArray($class_list);
+            $area_condition['class_id'] = $class_ids;
+            $area_list = AreaModel::model()->getPageList($area_condition, '', [], [], ['*'], $page_info);
+            if (!empty($area_list['list'])) {
+                foreach ($area_list['list'] as $key => $list) {
+                    $area_list['list'][$key]['class_name'] = $class_id_array[$list['class_id']]['value'];
+                }
+            }
+        }
+        return $area_list;
     }
 
     public static function getAreaList($area_ids)

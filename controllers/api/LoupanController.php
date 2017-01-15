@@ -39,6 +39,11 @@ class LoupanController extends LController
         if (!empty($this->params['sale_status'])) {
             $condition['sale_status'] = $this->params['sale_status'];
         }
+        if (!empty($this->params['is_trip_house'])) {
+            $condition['is_trip_house'] = $this->params['is_trip_house'];
+        } else {
+            $condition['is_trip_house'] = 0;
+        }
         //str_condition
         $str_condition = ' 1=1 ';
         if (!empty($this->params['average_price']) && is_array($this->params['average_price'])) {
@@ -88,6 +93,7 @@ class LoupanController extends LController
         $this->checkEmpty($requires);
         $this->params['img_5'] = $this->getRequestParam('img_5', '');
         $this->params['recommend'] = $this->getRequestParam('recommend', 0);
+        $this->params['is_trip_house'] = $this->getRequestParam('is_trip_house', 0);
         LoupanManager::addLoupan($this->params);
         return $this->success();
     }
@@ -102,6 +108,7 @@ class LoupanController extends LController
         $this->checkEmpty($requires);
         $this->params['img_5'] = $this->getRequestParam('img_5', '');
         $this->params['recommend'] = $this->getRequestParam('recommend', 0);
+        $this->params['is_trip_house'] = $this->getRequestParam('is_trip_house', 0);
         LoupanManager::editLoupan($this->params);
         return $this->success();
     }

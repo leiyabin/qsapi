@@ -113,8 +113,8 @@ class LoupanManager
     {
         self::checkLoupan($loupan);
         $loupan_filed = [
-            'name', 'average_price', 'address', 'sale_office_address', 'opening_time', 'area_id',
-            'property_type_id', 'sale_status', 'jiju', 'min_square', 'max_square', 'lon', 'lat','recommend',
+            'name', 'average_price', 'address', 'sale_office_address', 'opening_time', 'area_id', 'is_trip_house',
+            'property_type_id', 'sale_status', 'jiju', 'min_square', 'max_square', 'lon', 'lat', 'recommend',
             'developers', 'property_company', 'img', 'banner_img', 'right_time', 'remark', 'tag', 'is_deleted'
         ];
         $loupan_model = self::getFiled($loupan, $loupan_filed);
@@ -131,7 +131,7 @@ class LoupanManager
         self::checkLoupan($loupan);
         $loupan_filed = [
             'id', 'name', 'average_price', 'address', 'sale_office_address', 'opening_time', 'area_id',
-            'property_type_id', 'sale_status', 'jiju', 'min_square', 'max_square', 'lon', 'lat','recommend',
+            'property_type_id', 'sale_status', 'jiju', 'min_square', 'max_square', 'lon', 'lat', 'recommend', 'is_trip_house',
             'developers', 'property_company', 'img', 'banner_img', 'right_time', 'remark', 'tag', 'is_deleted'
         ];
         $loupan_model = self::getFiled($loupan, $loupan_filed);
@@ -207,7 +207,7 @@ class LoupanManager
     {
         //楼盘详情页信息
         $loupan = LouPanModel::model()->getById($id);
-        if(empty($loupan)){
+        if (empty($loupan)) {
             return [];
         }
         $area = AreaModel::model()->getById($loupan['area_id']);
