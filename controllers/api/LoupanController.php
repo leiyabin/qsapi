@@ -127,6 +127,8 @@ class LoupanController extends LController
         $requires = ['size'];
         $this->checkEmpty($requires);
         $condition['recommend'] = 1;
+        $is_trip_house = empty($this->params['is_trip_house']) ? 0 : 1;
+        $condition['is_trip_house'] = $is_trip_house;
         $model = LouPanModel::model()->getFewList($condition, $this->params['size']);
         return $this->success($model);
     }
