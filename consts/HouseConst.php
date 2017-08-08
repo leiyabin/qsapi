@@ -31,14 +31,12 @@ class HouseConst
     const PROPERTY_TYPE_HOUSE = 1;
     const PROPERTY_TYPE_SHOP = 2;
     const PROPERTY_TYPE_OFFICE = 3;
-    const PROPERTY_TYPE_SOHO = 4;
     const PROPERTY_TYPE_FACTORY = 5;
     const PROPERTY_TYPE_OTHER = 6;
     public static $property_type = [
         self::PROPERTY_TYPE_HOUSE   => '住宅',
-        self::PROPERTY_TYPE_SHOP    => '商用',
+        self::PROPERTY_TYPE_SHOP    => '商业',
         self::PROPERTY_TYPE_OFFICE  => '写字楼',
-        self::PROPERTY_TYPE_SOHO    => '商住两用',
         self::PROPERTY_TYPE_FACTORY => '厂房',
         self::PROPERTY_TYPE_OTHER   => '其它',
     ];
