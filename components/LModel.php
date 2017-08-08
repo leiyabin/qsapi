@@ -124,6 +124,7 @@ class LModel extends ActiveRecord
 
     public function add($model)
     {
+        $model['c_t'] = $model['u_t'] = time();
         $this->setOldAttributes(null);
         $this->attributes = $model;
         if ($this->validate()) {

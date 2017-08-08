@@ -52,7 +52,7 @@ class HouseConst
         self::FEATURE_1_CODE => '精装修',
         self::FEATURE_2_CODE => '离地铁近',
         self::FEATURE_3_CODE => '车位充足',
-        self::FEATURE_4_CODE => '学区房',
+        self::FEATURE_4_CODE => '配套齐全',
     ];
 
     //售价区间
