@@ -161,8 +161,9 @@ class LModel extends ActiveRecord
             $sql_log = sprintf('【sql】: %s , 【params】: %s', $sql, json_encode($fields, true));
             Yii::trace($sql_log, LogConst::SQL);
         }
-        $result = $command->query();
-        return $result->count();
+        $command->query();
+        $id = static::getDb()->getLastInsertId();
+        return $id;
     }
 
     public function getById($id, $select = ['*'])

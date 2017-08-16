@@ -101,42 +101,73 @@ class HouseManager
         return HouseImgModel::model()->getOneByCondition($condition, $select);
     }
 
-    public static function addHouse($house, $house_img)
-    {
-        HouseModel::model()->add($house);
-        HouseImgModel::model()->addBySQL($house_img);
-    }
+//    public static function addHouse($house, $house_img)
+//    {
+//        HouseModel::model()->add($house);
+//        HouseImgModel::model()->addBySQL($house_img);
+//    }
 
-    public static function editHouse($house, $house_img)
-    {
-        HouseModel::model()->updateById($house);
-        $condition = ['object_id' => $house['id'], 'type' => HouseConst::HOUSE_TYPE_OLD];
-        if (isset($house_img['object_id'])) {
-            unset($house_img['object_id']);
-        }
-        if (isset($house_img['type'])) {
-            unset($house_img['type']);
-        }
-        $house_img_id = HouseImgModel::model()->getOneByCondition($condition, ['id']);
-        $house_img['id'] = $house_img_id;
-        HouseImgModel::model()->updateById($house_img);
-    }
-
-    public static function editHouseAttach($house)
+//    public static function editHouse($house, $house_img)
+//    {
+//        HouseModel::model()->updateById($house);
+//        $condition = ['object_id' => $house['id'], 'type' => HouseConst::HOUSE_TYPE_OLD];
+//        if (isset($house_img['object_id'])) {
+//            unset($house_img['object_id']);
+//        }
+//        if (isset($house_img['type'])) {
+//            unset($house_img['type']);
+//        }
+//        $house_img_id = HouseImgModel::model()->getOneByCondition($condition, ['id']);
+//        $house_img['id'] = $house_img_id;
+//        HouseImgModel::model()->updateById($house_img);
+//    }
+    public static function addHouse($house)
     {
         self::checkHouse($house);
         $house_attributes = [
-            'lon'             => $house['lon'],
-            'lat'             => $house['lat'],
-            'tag'             => $house['tag'],
-            'recommend'       => $house['recommend'],
-            'is_school_house' => $house['is_school_house'],
-            'school_info'     => $house['school_info'],
+            'lon', 'lat', 'tag', 'recommend', 'is_school_house', 'school_info',
+            'area_id', 'property_type_id', 'address', 'property_company', 'house_age', 'in_floor', 'total_floor',
+            'decoration', 'right_type', 'buy_type', 'unit_price', 'total_price', 'face', 'build_area', 'floor_unit',
+            'house_facility', 'house_description', 'keywords', 'jishi', 'jitin', 'jiwei', 'jichu', 'jiyangtai'
         ];
-        HouseModel::model()->_updateById($house['id'], $house_attributes);
-        $house_attach = HouseAttachModel::model()->getById($house['id']);
+        $house_model = self::getFiled($house, $house_attributes);
+        $house_model['house_img'] = $house['img_1'];
+        $id = HouseModel::model()->addBySQL($house_model);
         $house_attach_attributes = [
-            'id', 'build_type', 'total_door_model', 'total_building', 'build_year', 'community_average_price', 'traffic_info',
+            'build_type', 'total_door_model', 'total_building', 'build_year', 'community_average_price', 'traffic_info',
+            'door_model_introduction', 'community_introduction', 'community_img', 'community_name',
+            'lon', 'lat', 'right_info', 'mortgage_info', 'deed_year', 'last_sale_time', 'sale_time', 'is_only', 'tax_explain'
+        ];
+        $house_attach_model = self::getFiled($house, $house_attach_attributes);
+        $house_attach_model['id'] = $id;
+        HouseAttachModel::model()->addBySQL($house_attach_model);
+        $img_model = [
+            'img_1' => $house['img_1'],
+            'img_2' => $house['img_2'],
+            'img_3' => $house['img_3'],
+            'img_4' => $house['img_4'],
+            'img_5' => $house['img_5'],
+        ];
+        $condition = ['type' => HouseConst::HOUSE_TYPE_OLD, 'object_id' => $id];
+        HouseImgModel::model()->add(array_merge($img_model, $condition));
+    }
+
+    public static function editHouse($house)
+    {
+        self::checkHouse($house);
+        $id = $house['id'];
+        $house_attributes = [
+            'lon', 'lat', 'tag', 'recommend', 'is_school_house', 'school_info',
+            'area_id', 'property_type_id', 'address', 'property_company', 'house_age', 'in_floor', 'total_floor',
+            'decoration', 'right_type', 'buy_type', 'unit_price', 'total_price', 'face', 'build_area', 'floor_unit',
+            'house_facility', 'house_description', 'keywords', 'jishi', 'jitin', 'jiwei', 'jichu', 'jiyangtai'
+        ];
+        $house_model = self::getFiled($house, $house_attributes);
+        $house_model['house_img'] = $house['img_1'];
+        HouseModel::model()->_updateById($id, $house_model);
+        $house_attach = HouseAttachModel::model()->getById($id);
+        $house_attach_attributes = [
+            'build_type', 'total_door_model', 'total_building', 'build_year', 'community_average_price', 'traffic_info',
             'door_model_introduction', 'community_introduction', 'community_img', 'community_name',
             'lon', 'lat', 'right_info', 'mortgage_info', 'deed_year', 'last_sale_time', 'sale_time', 'is_only', 'tax_explain'
         ];
@@ -144,8 +175,21 @@ class HouseManager
         if (empty($house_attach)) {
             HouseAttachModel::model()->add($house_attach_model);
         } else {
-            unset($house_attach_attributes['id']);
-            HouseAttachModel::model()->updateById($house_attach_model);
+            HouseAttachModel::model()->_updateById($id, $house_attach_model);
+        }
+        $img_model = [
+            'img_1' => $house['img_1'],
+            'img_2' => $house['img_2'],
+            'img_3' => $house['img_3'],
+            'img_4' => $house['img_4'],
+            'img_5' => $house['img_5'],
+        ];
+        $condition = ['type' => HouseConst::HOUSE_TYPE_OLD, 'object_id' => $id];
+        $house_img = HouseImgModel::model()->getOneByCondition($condition);
+        if (empty($house_img)) {
+            HouseImgModel::model()->add(array_merge($img_model, $condition));
+        } else {
+            HouseImgModel::model()->updateByCondition($condition, $img_model);
         }
     }
 
@@ -164,11 +208,35 @@ class HouseManager
     {
         $build_type = $house['build_type'];
         $deed_year = $house['deed_year'];
+        $area_id = $house['area_id'];
+        $property_type_id = $house['property_type_id'];
+        $decoration = $house['decoration'];
+        $right_type = $house['right_type'];
+        $buy_type = $house['buy_type'];
+
         if (!isset(HouseConst::$build_type[$build_type])) {
             throw new RequestException('建筑类型不正确', ErrorCode::ACTION_ERROR);
         }
         if (!isset(HouseConst::$deed_year[$deed_year])) {
             throw new RequestException('房本年限不正确', ErrorCode::ACTION_ERROR);
         }
+        if (!isset(HouseConst::$property_type[$property_type_id])) {
+            throw new RequestException('物业类型不正确', ErrorCode::ACTION_ERROR);
+        }
+        if (!isset(HouseConst::$decoration[$decoration])) {
+            throw new RequestException('装修情况不正确', ErrorCode::ACTION_ERROR);
+        }
+        if (!isset(HouseConst::$right_type[$right_type])) {
+            throw new RequestException('产权不正确', ErrorCode::ACTION_ERROR);
+        }
+        if (!isset(HouseConst::$buy_type[$buy_type])) {
+            throw new RequestException('购买方式不正确', ErrorCode::ACTION_ERROR);
+        }
+        $area = AreaModel::model()->getById($area_id);
+        if (empty($area)) {
+            throw new RequestException('区域不正确', ErrorCode::ACTION_ERROR);
+        }
+
+        //todo 校验经纪人
     }
 }

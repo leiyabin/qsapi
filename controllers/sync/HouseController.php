@@ -171,9 +171,9 @@ class HouseController extends LController
         $id = $house['id'];
         $select_house = HouseManager::getHouse($id);
         if (empty($select_house)) {
-            HouseManager::addHouse($house, $house_img);
+//            HouseManager::addHouse($house, $house_img);
         } else {
-            HouseManager::editHouse($house, $house_img);
+//            HouseManager::editHouse($house, $house_img);
         }
     }
 }

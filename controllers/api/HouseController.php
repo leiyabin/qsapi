@@ -114,15 +114,48 @@ class HouseController extends LController
     public function actionEdit()
     {
         $requires = [
+            'area_id', 'property_type_id', 'address', 'property_company', 'house_age', 'in_floor', 'total_floor',
+            'decoration', 'right_type', 'buy_type', 'unit_price', 'total_price', 'face', 'build_area', 'floor_unit',
+            'house_facility', 'house_description', 'keywords', 'img_1', 'img_2', 'img_3', 'img_4',
             'id', 'build_type', 'total_door_model', 'total_building', 'build_year', 'community_average_price', 'traffic_info',
             'door_model_introduction', 'community_introduction', 'community_img', 'community_name',
             'lon', 'lat', 'right_info', 'mortgage_info', 'deed_year', 'last_sale_time', 'sale_time', 'tag'
         ];
         $this->checkEmpty($requires);
         $this->params['recommend'] = $this->getRequestParam('recommend', 0);
+        $this->params['img_5'] = $this->getRequestParam('img_5', '');
+        $this->params['jishi'] = $this->getRequestParam('jishi', 0);
+        $this->params['jitin'] = $this->getRequestParam('jitin', 0);
+        $this->params['jiwei'] = $this->getRequestParam('jiwei', 0);
+        $this->params['jichu'] = $this->getRequestParam('jichu', 0);
+        $this->params['jiyangtai'] = $this->getRequestParam('jiyangtai', 0);
         $this->params['is_only'] = $this->getRequestParam('is_only', 0);
         $this->params['is_school_house'] = $this->getRequestParam('is_school_house', 0);
-        HouseManager::editHouseAttach($this->params);
+        HouseManager::editHouse($this->params);
+        return $this->success();
+    }
+
+    public function actionAdd()
+    {
+        $requires = [
+            'area_id', 'property_type_id', 'address', 'property_company', 'house_age', 'in_floor', 'total_floor',
+            'decoration', 'right_type', 'buy_type', 'unit_price', 'total_price', 'face', 'build_area', 'floor_unit',
+            'house_facility', 'house_description', 'keywords', 'img_1', 'img_2', 'img_3', 'img_4',
+            'build_type', 'total_door_model', 'total_building', 'build_year', 'community_average_price', 'traffic_info',
+            'door_model_introduction', 'community_introduction', 'community_img', 'community_name',
+            'lon', 'lat', 'right_info', 'mortgage_info', 'deed_year', 'last_sale_time', 'sale_time', 'tag'
+        ];
+        $this->checkEmpty($requires);
+        $this->params['recommend'] = $this->getRequestParam('recommend', 0);
+        $this->params['img_5'] = $this->getRequestParam('img_5', '');
+        $this->params['jishi'] = $this->getRequestParam('jishi', 0);
+        $this->params['jitin'] = $this->getRequestParam('jitin', 0);
+        $this->params['jiwei'] = $this->getRequestParam('jiwei', 0);
+        $this->params['jichu'] = $this->getRequestParam('jichu', 0);
+        $this->params['jiyangtai'] = $this->getRequestParam('jiyangtai', 0);
+        $this->params['is_only'] = $this->getRequestParam('is_only', 0);
+        $this->params['is_school_house'] = $this->getRequestParam('is_school_house', 0);
+        HouseManager::addHouse($this->params);
         return $this->success();
     }
 
