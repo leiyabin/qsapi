@@ -81,18 +81,8 @@ class LModel extends ActiveRecord
     //============================以下是重构方法=============================
     public function _updateById($id, array $attributes)
     {
-        $class = get_called_class();
-        $model = $class::findOne($id);
-        if (empty($model)) {
-            throw new RequestException('该条记录不存在', ErrorCode::ACTION_ERROR);
-        } else {
-            try {
-                $model->setAttributes($attributes);
-                $model->save();
-            } catch (\Exception $e) {
-                throw new RequestException($e->getMessage(), ErrorCode::SYSTEM_ERROR);
-            }
-        }
+        $condition = ['id' => $id];
+        return $this->updateByCondition($condition, $attributes);
     }
 
     public function getListByCondition($condition, $select = ['*'])
