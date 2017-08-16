@@ -218,7 +218,7 @@ class LModel extends ActiveRecord
     {
         $attributes = array_merge($attributes, ['c_t' => time(), 'u_t' => time()]);
         $class = get_called_class();
-        return $class::updateAllCounters($attributes, $condition);
+        return $class::updateAll($attributes, $condition);
     }
 
     public function getFewList($condition, $limit, $select = ['*'])
