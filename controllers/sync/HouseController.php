@@ -6,6 +6,7 @@
  * Date: 2016/11/27
  * Time: 14:22
  */
+
 namespace app\controllers\sync;
 
 use app\components\LController;
@@ -21,7 +22,12 @@ class HouseController extends LController
     public function actionStorage()
     {
         $params = $this->params;
+        file_put_contents('/tmp/lyb.txt',
+            json_encode($params, JSON_UNESCAPED_UNICODE) . PHP_EOL, FILE_APPEND);
         $params = $this->iconvArray($params);
+        file_put_contents('/tmp/lyb.txt',
+            json_encode($params, JSON_UNESCAPED_UNICODE) . PHP_EOL, FILE_APPEND);
+        return $this->success();
         $size = $params['API_pagesize'];
         $broker_list = $this->getBrokerList();
         $area_list = AreaManager::getAllArea();
