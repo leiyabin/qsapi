@@ -14,4 +14,5 @@ class LogConst
     const RESPONSE = 'response';
     const RPC = 'rpc';
     const SQL = 'sql';
+    const SYNC = 'sync';
 }

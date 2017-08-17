@@ -84,6 +84,13 @@ return [
             'levels'     => ['error', 'info'],
             'categories' => ['rpc'],
             'logFile'    => '@app/runtime/logs/rpc.log'
+        ],
+        [
+            'class'      => 'yii\log\FileTarget',
+            'logVars'    => [],
+            'levels'     => ['info'],
+            'categories' => ['sync'],
+            'logFile'    => '@app/runtime/logs/sync.log'
         ]
     ],
 ];

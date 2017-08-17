@@ -12,22 +12,22 @@ namespace app\controllers\sync;
 use app\components\LController;
 use app\consts\ErrorCode;
 use app\consts\HouseConst;
+use app\consts\LogConst;
 use app\exception\RequestException;
 use app\manager\AreaManager;
 use app\manager\BrokerManager;
 use app\manager\HouseManager;
+use Yii;
+use yii\log\Logger;
 
 class HouseController extends LController
 {
     public function actionStorage()
     {
         $params = $this->params;
-        file_put_contents('/tmp/lyb.txt',
-            json_encode($params, JSON_UNESCAPED_UNICODE) . PHP_EOL, FILE_APPEND);
-        $params = $this->iconvArray($params);
-        file_put_contents('/tmp/lyb.txt',
-            json_encode($params, JSON_UNESCAPED_UNICODE) . PHP_EOL, FILE_APPEND);
+        Yii::info(json_encode($params),LogConst::SYNC);
         return $this->success();
+        $params = $this->iconvArray($params);
         $size = $params['API_pagesize'];
         $broker_list = $this->getBrokerList();
         $area_list = AreaManager::getAllArea();
